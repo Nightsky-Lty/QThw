@@ -1,0 +1,12 @@
+# ninja log v6
+8	1108	7692458833631307	my_qt_project_autogen/timestamp	326b88b9b9178339
+8	1108	7692458833631307	my_qt_project_autogen/mocs_compilation.cpp	326b88b9b9178339
+8	1108	7692458833631307	D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/timestamp	326b88b9b9178339
+8	1108	7692458833631307	D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/mocs_compilation.cpp	326b88b9b9178339
+1119	1342	7692458836100968	my_qt_project_autogen/3YJK5W5UP7/qrc_resources.cpp	3ad646286848ac40
+1119	1342	7692458836100968	D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/3YJK5W5UP7/qrc_resources.cpp	3ad646286848ac40
+1396	1510	7692458837640650	CMakeFiles/my_qt_project.dir/my_qt_project_autogen/3YJK5W5UP7/qrc_resources.cpp.obj	d4c6813c02ece852
+1377	3837	7692458837454867	CMakeFiles/my_qt_project.dir/src/mainwindow.cpp.obj	bacdf54b69bf0a0f
+1359	3876	7692458837273656	CMakeFiles/my_qt_project.dir/src/main.cpp.obj	fc05cedb079c3279
+1342	3888	7692458837106006	CMakeFiles/my_qt_project.dir/my_qt_project_autogen/mocs_compilation.cpp.obj	3cbbe0dc35341739
+3889	4119	7692458862568654	my_qt_project.exe	44acd15a8b57dba2
