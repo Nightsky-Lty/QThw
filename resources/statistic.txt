@@ -1,0 +1,219 @@
+Bus Latency:1
+transmit_package_number: 11602              // 总线上传输过的数据包总量
+avg_transmit_latency: 3                     // 总线的平均传输延迟（单位为周期）
+node_0_transmit_package_number: 2746        // 通过节点0的数据包总量
+node_0_busy_rate: 0.047560                  // 节点0的使用率
+node_0_transmit_package_number: 2746
+node_0_busy_rate: 0.047560
+node_1_transmit_package_number: 2080
+node_1_busy_rate: 0.049361
+node_1_transmit_package_number: 2080
+node_1_busy_rate: 0.049361
+node_2_transmit_package_number: 1238
+node_2_busy_rate: 0.038977
+node_3_transmit_package_number: 1760
+node_3_busy_rate: 0.028337
+node_3_transmit_package_number: 1760
+node_3_busy_rate: 0.028337
+node_4_transmit_package_number: 1607
+node_4_busy_rate: 0.022962
+node_4_transmit_package_number: 1607
+node_4_busy_rate: 0.022962
+node_5_transmit_package_number: 0
+node_5_busy_rate: 0.012361
+edge_0_to_1_busy_rate: 0.018136             // 从节点0到节点1这条边（信道）的使用率
+edge_0_to_5_busy_rate: 0.005231
+edge_1_to_0_busy_rate: 0.015445
+edge_1_to_2_busy_rate: 0.016133
+edge_2_to_1_busy_rate: 0.016329
+edge_2_to_3_busy_rate: 0.014542
+edge_3_to_2_busy_rate: 0.006632
+edge_3_to_4_busy_rate: 0.008237
+edge_4_to_3_busy_rate: 0.003418
+edge_4_to_5_busy_rate: 0.007130
+edge_5_to_0_busy_rate: 0.007130
+edge_5_to_4_busy_rate: 0.005231
+transmit_package_number_from_4_to_7: 172    // 从端口4到端口7的数据包总量
+transmit_package_number_from_2_to_7: 76
+transmit_package_number_from_0_to_7: 283
+transmit_package_number_from_5_to_0: 8
+transmit_package_number_from_3_to_7: 40
+transmit_package_number_from_6_to_7: 49
+transmit_package_number_from_7_to_6: 178
+transmit_package_number_from_5_to_7: 71
+transmit_package_number_from_7_to_1: 120
+transmit_package_number_from_5_to_2: 145
+transmit_package_number_from_8_to_5: 34
+transmit_package_number_from_3_to_5: 45
+transmit_package_number_from_5_to_1: 122
+transmit_package_number_from_4_to_5: 194
+transmit_package_number_from_5_to_3: 168
+transmit_package_number_from_7_to_8: 162
+transmit_package_number_from_6_to_0: 227
+transmit_package_number_from_2_to_6: 362
+transmit_package_number_from_8_to_0: 203
+transmit_package_number_from_1_to_7: 26
+transmit_package_number_from_8_to_4: 305
+transmit_package_number_from_6_to_4: 324
+transmit_package_number_from_7_to_3: 160
+transmit_package_number_from_0_to_6: 557
+transmit_package_number_from_2_to_3: 357
+transmit_package_number_from_7_to_5: 5
+transmit_package_number_from_0_to_8: 490
+transmit_package_number_from_4_to_2: 348
+transmit_package_number_from_2_to_5: 93
+transmit_package_number_from_3_to_4: 315
+transmit_package_number_from_7_to_0: 47
+transmit_package_number_from_0_to_3: 508
+transmit_package_number_from_2_to_0: 94
+transmit_package_number_from_1_to_4: 294
+transmit_package_number_from_3_to_0: 196
+transmit_package_number_from_0_to_1: 455
+transmit_package_number_from_4_to_0: 1762
+transmit_package_number_from_5_to_8: 164
+transmit_package_number_from_8_to_7: 34
+transmit_package_number_from_0_to_2: 661
+transmit_package_number_from_1_to_0: 154
+transmit_package_number_from_2_to_8: 329
+transmit_package_number_from_6_to_2: 71
+transmit_package_number_from_2_to_1: 307
+transmit_package_number_from_3_to_2: 61
+transmit_package_number_from_1_to_5: 27
+transmit_package_number_from_8_to_2: 44
+transmit_package_number_from_6_to_5: 50
+transmit_package_number_from_1_to_2: 35
+transmit_package_number_from_5_to_6: 186
+transmit_package_number_from_7_to_2: 158
+transmit_package_number_from_0_to_5: 326
+
+cache_event_trace Latency:1                     // 这个模块记录的所有Cache访问事件的性能信息。xxx_cnt表示事件次数，xxx_tick表示总消耗周期，xxx_avg代表这一个步骤在这一类事件中消耗的时间比例
+l1miss_l2hit_cnt: 342                           // L1Cache未命中，但这个缓存行在L2Cache中命中
+l1miss_l2hit_tick: 2076                         // 这一类事件共消耗2076个周期，平均每次消耗2076/342个周期
+l1miss_l2forward_cnt: 0                         // L1Cache未命中，但L2Cache知道这个缓存行在另一个L1中
+l1miss_l2forward_tick: 0                        // 这里是0因为本次模拟架构中L1与L2都是核心私有的，L2无法访问另外的L1
+l1miss_l2forward_l1_l2_avg: 0
+l1miss_l2forward_l2_ol1_avg: 0
+l1miss_l2forward_ol1_l1_avg: 0
+l1miss_l2miss_l3hit_cnt: 117                    // L1与L2均未命中，但L3命中
+l1miss_l2miss_l3hit_tick: 3520
+l1miss_l2miss_l1_l2_avg: 0.170919               // 这类事件中有17%的时间消耗在L1到L2的请求上
+l1miss_l2miss_l2_l3_avg: 0.421632               // 这类事件中有42.1%的时间消耗在L2到L3的请求上
+l1miss_l2miss_l3_l2_avg: 0.37398                // 这类事件中有37.4%的时间消耗在L3到L2的回复上
+l1miss_l2miss_l2_l1_avg: 0.0334688              // 这类事件中有3.3%的时间消耗在L2到L1的回复上
+l1miss_l2miss_l3forward_cnt: 924                // L1与L2均未命中，但L3知道这个缓存行在另一个L2中
+l1miss_l2miss_l3forward_tick: 31924
+l1miss_l2miss_l3forward_l1_l2_avg: 0.147522
+l1miss_l2miss_l3forward_l2_l3_avg: 0.368925
+l1miss_l2miss_l3forward_l3_ol2_avg: 0.224051    // 这类事件中有22.4%的时间消耗在L3到另一个L2的请求上
+l1miss_l2miss_l3forward_ol2_l2_avg: 0.230429    // 这类事件中有23%的时间消耗在另一个L2到请求的L2的回复上
+l1miss_l2miss_l3forward_l2_l1_avg: 0.0290731
+l1miss_l2miss_l3miss_cnt: 1238                  // L1，L2，L3均未命中，L3需要到内存中获取这个缓存行
+l1miss_l2miss_l3miss_tick: 38641                
+l1miss_l2miss_l3miss_l1_l2_avg: 0.162887
+l1miss_l2miss_l3miss_l2_l3_avg: 0.407283
+l1miss_l2miss_l3miss_l3_mem_avg: 0.113123
+l1miss_l2miss_l3miss_mem_l2_avg: 0.28456
+l1miss_l2miss_l3miss_l2_l1_avg: 0.0321479
+
+MemoryNode0 Latency:1
+message_precossed: 1238                 // 内存节点处理的访问总次数
+busy_rate: 0.008014                     // 内存节点的占用率（所以这个总线结构确实需要优化，内存节点使用率只有0.8%）
+
+L3Cache0 Latency:1
+llc_hit_count: 179
+llc_miss_count: 316
+
+L3Cache1 Latency:1
+llc_hit_count: 227
+llc_miss_count: 363
+
+L3Cache2 Latency:1
+llc_hit_count: 252
+llc_miss_count: 378
+
+L3Cache3 Latency:1
+llc_hit_count: 223
+llc_miss_count: 341
+
+L2Cache0 Latency:1
+l1i_hit_count: 71125
+l1i_miss_count: 673
+l1d_hit_count: 11540
+l1d_miss_count: 515
+l2_hit_count: 192
+l2_miss_count: 971
+
+L2Cache1 Latency:1
+l1i_hit_count: 101028
+l1i_miss_count: 251
+l1d_hit_count: 9182
+l1d_miss_count: 515
+l2_hit_count: 69
+l2_miss_count: 678
+
+L2Cache2 Latency:1
+l1i_hit_count: 26766
+l1i_miss_count: 148
+l1d_hit_count: 3621
+l1d_miss_count: 191
+l2_hit_count: 19
+l2_miss_count: 320
+
+L2Cache3 Latency:1
+l1i_hit_count: 26354
+l1i_miss_count: 148
+l1d_hit_count: 3451
+l1d_miss_count: 181
+l2_hit_count: 19
+l2_miss_count: 310
+
+CPU0 Latency:1
+total_tick_processed: 85339             // 处理器处于运行状态的总周期数
+finished_inst_count: 31189              // 处理器执行的指令数量
+ld_cache_miss_count: 165                // LOAD指令（读内存指令）的L1 Miss数量
+ld_cache_hit_count: 6429
+ld_inst_cnt: 6594                   
+ld_mem_tick_sum: 11460                  // LOAD指令（读内存指令）消耗的总周期数，平均每个指令消耗11460/6594个周期
+st_cache_miss_count: 333                // STORE指令（写内存指令），同上
+st_cache_hit_count: 4889
+st_inst_cnt: 5222
+st_mem_tick_sum: 14880
+
+CPU1 Latency:1
+total_tick_processed: 87306
+finished_inst_count: 34298
+ld_cache_miss_count: 347
+ld_cache_hit_count: 6583
+ld_inst_cnt: 6930
+ld_mem_tick_sum: 17390
+st_cache_miss_count: 149
+st_cache_hit_count: 2102
+st_inst_cnt: 2251
+st_mem_tick_sum: 6340
+
+CPU2 Latency:1
+total_tick_processed: 28999
+finished_inst_count: 10333
+ld_cache_miss_count: 64
+ld_cache_hit_count: 1882
+ld_inst_cnt: 1946
+ld_mem_tick_sum: 4157
+st_cache_miss_count: 119
+st_cache_hit_count: 1617
+st_inst_cnt: 1736
+st_mem_tick_sum: 5373
+
+CPU3 Latency:1
+total_tick_processed: 27904
+finished_inst_count: 9921
+ld_cache_miss_count: 63
+ld_cache_hit_count: 1792
+ld_inst_cnt: 1855
+ld_mem_tick_sum: 3993
+st_cache_miss_count: 110
+st_cache_hit_count: 1525
+st_inst_cnt: 1635
+st_mem_tick_sum: 5052
+
+DMA Latency:1
+

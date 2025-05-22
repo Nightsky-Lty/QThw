@@ -1,0 +1,129 @@
+Bus @1tick                  // 总线负责芯片上不同组件之间的通讯，一般用于缓存Cache和内存Memory之间的数据传输
+node_number: 10             // **此处应为port_number** 总线包含若干个端口，每个端口可以连接一个硬件组件，是发送接收数据包的基本单位
+node_id_of_port_9: 5        // 多个端口可以被映射到同一个节点上
+node_id_of_port_8: 4        // 总线包含若干个互相连接的节点，节点之间进行数据传输需要消耗时间，而同一节点上的不同端口之间的数据传输可以立即到达
+node_id_of_port_7: 4        // 即，节点是物理意义上总线拓扑网络的节点，而端口是通过这一个节点建立传输的逻辑端点
+node_id_of_port_6: 3
+node_id_of_port_5: 3
+node_id_of_port_4: 2
+node_id_of_port_3: 1
+node_id_of_port_2: 1
+node_id_of_port_1: 0
+node_id_of_port_0: 0
+edge: 0 to 1                // 总线拓扑结构通过一个互连表表示，类似数据结构中对有向图的表示方法
+edge: 0 to 5                // 这里的每一行代表一个数据通道（即图的一个边）a to b，a为发送节点ID，b为接收节点ID
+edge: 1 to 0
+edge: 1 to 2
+edge: 2 to 1
+edge: 2 to 3
+edge: 3 to 2
+edge: 3 to 4
+edge: 4 to 3
+edge: 4 to 5
+edge: 5 to 0
+edge: 5 to 4
+
+cache_event_trace @1tick    // 这个模块用于记录Cache事件的，没有配置参数
+
+MemoryNode0 @1tick          // 内存节点即DDR控制器，是芯片连接外部内存颗粒的端口，一端连接片上总线，另一端连接片外主板上的内存条
+port_id: 4                  // 该节点连接的总线端口ID
+data_width: 32              // 访问DDR内存的位宽，即每Hz能从DDR获取多少bit的数据
+
+L3Cache0 @1tick             // L3Cache是最低级的缓存（最接近内存的缓存），整个片上所有核心共享同一个L3缓存，当L2缓存未命中时，L3需要负责找到对应的数据
+port_id: 1
+way_count: 8                // N路组相连是一种缓存映射策略
+set_count: 512
+mshr_count: 8               // MSHR Miss Status Holding Registers，是处理未命中缓存的工作区，未命中的缓存信息会在这里保存直到处理完成
+index_width: 1              // 索引宽度，即这个缓存能同时处理多少个索引缓存行的请求
+index_latency: 10           // 索引延迟，即对该缓存的索引需要消耗多少个周期（如1GHz主频意味着1秒=10^9个周期）
+nuca_index: 0               // NUCA Non-Uniform Cache Access，非对称内存访问。
+nuca_num: 4                 // 这个文件里有4个L3Cache，但它们分别负责不同的内存地址，逻辑上它们共同组成了一个完整的共享L3Cache
+
+L3Cache1 @1tick
+port_id: 3
+way_count: 8
+set_count: 512
+mshr_count: 8
+index_width: 1
+index_latency: 10
+nuca_index: 1
+nuca_num: 4
+
+L3Cache2 @1tick
+port_id: 6
+way_count: 8
+set_count: 512
+mshr_count: 8
+index_width: 1
+index_latency: 10
+nuca_index: 2
+nuca_num: 4
+
+L3Cache3 @1tick
+port_id: 8
+way_count: 8
+set_count: 512
+mshr_count: 8
+index_width: 1
+index_latency: 10
+nuca_index: 3
+nuca_num: 4
+
+L2Cache0 @1tick
+port_id: 0
+l1i_way_count: 8
+l1i_set_count: 16
+l1d_way_count: 8
+l1d_set_count: 32
+l2_way_count: 8
+l2_set_count: 128
+l2_mshr_count: 8
+l2_index_width: 1
+l2_index_latency: 4
+
+L2Cache1 @1tick
+port_id: 2
+l1i_way_count: 8
+l1i_set_count: 16
+l1d_way_count: 8
+l1d_set_count: 32
+l2_way_count: 8
+l2_set_count: 128
+l2_mshr_count: 8
+l2_index_width: 1
+l2_index_latency: 4
+
+L2Cache2 @1tick
+port_id: 5
+l1i_way_count: 8
+l1i_set_count: 16
+l1d_way_count: 8
+l1d_set_count: 32
+l2_way_count: 8
+l2_set_count: 128
+l2_mshr_count: 8
+l2_index_width: 1
+l2_index_latency: 4
+
+L2Cache3 @1tick
+port_id: 7
+l1i_way_count: 8
+l1i_set_count: 16
+l1d_way_count: 8
+l1d_set_count: 32
+l2_way_count: 8
+l2_set_count: 128
+l2_mshr_count: 8
+l2_index_width: 1
+l2_index_latency: 4
+
+CPU0 @1tick
+
+CPU1 @1tick
+
+CPU2 @1tick
+
+CPU3 @1tick
+
+DMA @1tick
+
