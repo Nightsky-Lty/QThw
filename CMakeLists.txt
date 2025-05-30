@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(my_qt_project VERSION 1.0 LANGUAGES CXX)
+project(HardwareVisualizer VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,13 +16,15 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 # 查找Qt包
-find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
 # 设置源文件
 set(PROJECT_SOURCES
     src/main.cpp
     src/mainwindow.cpp
-    src/mainwindow.h
+    src/hardwaremodule.cpp
+    src/dataparser.cpp
+    src/hardwareview.cpp
     resources/resources.qrc
 )
 
