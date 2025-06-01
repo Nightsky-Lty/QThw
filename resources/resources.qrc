@@ -1,6 +1,0 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-    <qresource prefix="/">
-        <!-- 这里可以添加资源文件 -->
-    </qresource>
-</RCC> 
