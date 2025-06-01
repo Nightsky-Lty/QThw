@@ -4,6 +4,7 @@ HardwareModule::HardwareModule(ModuleType type, const QString &name, QObject *pa
     : QObject(parent)
     , m_type(type)
     , m_name(name)
+    , m_portId(-1)
     , m_busPortNumber(0)
     , m_nuca_index(0)
     , m_nuca_num(0)

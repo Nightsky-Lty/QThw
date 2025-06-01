@@ -36,12 +36,17 @@ void MainWindow::createActions()
     m_resetAction = new QAction("Reset Layout", this);
     m_resetAction->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
     connect(m_resetAction, &QAction::triggered, this, &MainWindow::resetToInitial);
+    // Draw Connections
+    m_drawLineAction = new QAction("Draw Connections", this);
+    m_drawLineAction->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
+    connect(m_drawLineAction, &QAction::triggered, this, &MainWindow::drawConnections);
 }
 
 void MainWindow::createToolBar()
 {
     addToolBar(m_toolBar);
     m_toolBar->addAction(m_resetAction);
+    m_toolBar->addAction(m_drawLineAction);
 }
 
 void MainWindow::setupInitialLayout()
@@ -59,6 +64,11 @@ void MainWindow::resetToInitial()
 
     // 重新加载配置
     loadConfiguration();
+}
+
+void MainWindow::drawConnections()
+{
+    m_visualizer->drawConnections();
 }
 
 void MainWindow::loadConfiguration()
@@ -82,10 +92,16 @@ void MainWindow::loadSetupFile(const QString& filename)
     QVector<QPair<int, int>> busEdges;
     QMap<int, int> portToNodeMap;
     int portNumber = 0;
+    int currentPortId = -1;  // 用于临时存储当前读取到的portId
 
     while (!in.atEnd()) {
         line = in.readLine().trimmed();
         if (line.isEmpty() || line.startsWith("//")) continue;
+
+        if (line.startsWith("port_id:")) {  // 新增：读取portId
+            currentPortId = line.split(":").last().trimmed().toInt();
+            continue;
+        }
 
         if (line.contains("@1tick")) {
             QString moduleName = line.split("@").first().trimmed();
@@ -109,6 +125,10 @@ void MainWindow::loadSetupFile(const QString& filename)
             }
             
             auto module = new HardwareModule(type, moduleName, this);
+            if (currentPortId != -1) {  // 新增：设置portId
+                module->setPortId(currentPortId);
+                currentPortId = -1;  // 重置currentPortId
+            }
             m_modules.append(module);
             m_moduleMap[moduleName] = module;
             m_visualizer->addModule(module);

@@ -37,6 +37,10 @@ public:
         }
     }
 
+    // 设置和获取端口ID
+    void setPortId(int id) { m_portId = id; }
+    int portId() const { return m_portId; }
+
     // 总线配置
     void setBusConfig(int portNumber, const QMap<int, int> &portToNodeMap,
                      const QVector<QPair<int, int>> &edges);
@@ -75,6 +79,7 @@ private:
     ModuleType m_type;
     QString m_name;
     QPointF m_position;
+    int m_portId;  // 新增：存储端口ID
     QMap<QString, double> m_statistics;
 
     // 总线属性

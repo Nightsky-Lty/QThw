@@ -306,7 +306,7 @@ void HardwareVisualizer::drawConnections()
             delete item;
         }
     }
-    
+
     if (!m_busModule) return;
 
     // 创建端口到模块的映射
@@ -314,23 +314,7 @@ void HardwareVisualizer::drawConnections()
     for (auto it = m_moduleItems.begin(); it != m_moduleItems.end(); ++it) {
         HardwareModule* module = it.key();
         if (module->type() != HardwareModule::BUS) {
-            int portId = -1;
-            switch (module->type()) {
-                case HardwareModule::CPU_CORE:
-                    portId = module->name().right(1).toInt();
-                    break;
-                case HardwareModule::CACHE_L2:
-                    portId = module->name().right(1).toInt();
-                    break;
-                case HardwareModule::CACHE_L3:
-                    portId = module->name().right(1).toInt() + 4;
-                    break;
-                case HardwareModule::MEMORY_CTRL:
-                    portId = 4;
-                    break;
-                default:
-                    break;
-            }
+            int portId = module->portId();
             if (portId >= 0) {
                 portToModule[portId] = module;
             }

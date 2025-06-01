@@ -25,6 +25,8 @@ public:
     void clearModules();
     // 自动布局所有模块
     void autoLayout();
+    // 绘制连接线
+    void drawConnections();
 
 protected:
     // 处理鼠标事件，用于拖拽模块
@@ -46,8 +48,6 @@ private:
 
     // 创建不同类型硬件模块的图形项
     QGraphicsItem* createModuleItem(HardwareModule* module);
-    // 绘制模块之间的连接
-    void drawConnections();
     // 更新模块的统计信息显示
     void updateStatistics(HardwareModule* module);
     // 获取模块颜色
