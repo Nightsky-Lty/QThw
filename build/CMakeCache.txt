@@ -24,9 +24,6 @@ CMAKE_AR:FILEPATH=D:/QT/Tools/mingw1310_64/bin/ar.exe
 // MinSizeRel ...
 CMAKE_BUILD_TYPE:STRING=
 
-//CXX compiler
-CMAKE_CXX_COMPILER:FILEPATH=D:/QT/Tools/mingw1310_64/bin/c++.exe
-
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
 CMAKE_CXX_COMPILER_AR:FILEPATH=D:/QT/Tools/mingw1310_64/bin/gcc-ar.exe
@@ -120,7 +117,7 @@ CMAKE_INSTALL_MANDIR:PATH=
 CMAKE_INSTALL_OLDINCLUDEDIR:PATH=/usr/include
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/my_qt_project
+CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/HardwareVisualizer
 
 //Run-time variable data (LOCALSTATEDIR/run)
 CMAKE_INSTALL_RUNSTATEDIR:PATH=
@@ -176,7 +173,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=my_qt_project
+CMAKE_PROJECT_NAME:STATIC=HardwareVisualizer
 
 //Value Computed by CMake
 CMAKE_PROJECT_VERSION:STATIC=1.0
@@ -197,7 +194,7 @@ CMAKE_PROJECT_VERSION_TWEAK:STATIC=
 CMAKE_RANLIB:FILEPATH=D:/QT/Tools/mingw1310_64/bin/ranlib.exe
 
 //RC compiler
-CMAKE_RC_COMPILER:FILEPATH=D:/QT/Tools/mingw1310_64/bin/windres.exe
+CMAKE_RC_COMPILER:FILEPATH=C:/Program Files/mingw64/bin/windres.exe
 
 //Flags for Windows Resource Compiler during all build types.
 CMAKE_RC_FLAGS:STRING=
@@ -276,6 +273,15 @@ CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Value Computed by CMake
+HardwareVisualizer_BINARY_DIR:STATIC=D:/CS/2025spring-programming/QThw/build
+
+//Value Computed by CMake
+HardwareVisualizer_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+HardwareVisualizer_SOURCE_DIR:STATIC=D:/CS/2025spring-programming/QThw
+
 //Additional directories where find(Qt6 ...) host Qt components
 // are searched
 QT_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH:STRING=
@@ -316,9 +322,6 @@ Qt6Widgets_DIR:PATH=D:/QT/6.9.0/mingw_64/lib/cmake/Qt6Widgets
 //The directory containing a CMake configuration file for Qt6ZlibPrivate.
 Qt6ZlibPrivate_DIR:PATH=D:/QT/6.9.0/mingw_64/lib/cmake/Qt6ZlibPrivate
 
-//The directory containing a CMake configuration file for Qt6.
-Qt6_DIR:PATH=D:/QT/6.9.0/mingw_64/lib/cmake/Qt6
-
 //Path to a program.
 Vulkan_GLSLANG_VALIDATOR_EXECUTABLE:FILEPATH=Vulkan_GLSLANG_VALIDATOR_EXECUTABLE-NOTFOUND
 
@@ -333,15 +336,6 @@ Vulkan_LIBRARY:FILEPATH=Vulkan_LIBRARY-NOTFOUND
 
 //Path to a program.
 WINDEPLOYQT_EXECUTABLE:FILEPATH=D:/QT/6.9.0/mingw_64/bin/windeployqt.exe
-
-//Value Computed by CMake
-my_qt_project_BINARY_DIR:STATIC=D:/CS/2025spring-programming/QThw/build
-
-//Value Computed by CMake
-my_qt_project_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-my_qt_project_SOURCE_DIR:STATIC=D:/CS/2025spring-programming/QThw
 
 
 ########################
@@ -366,8 +360,6 @@ CMAKE_COMMAND:INTERNAL=D:/CMAKE/bin/cmake.exe
 CMAKE_CPACK_COMMAND:INTERNAL=D:/CMAKE/bin/cpack.exe
 //Path to ctest program executable.
 CMAKE_CTEST_COMMAND:INTERNAL=D:/CMAKE/bin/ctest.exe
-//ADVANCED property for variable: CMAKE_CXX_COMPILER
-CMAKE_CXX_COMPILER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_CXX_COMPILER_AR
 CMAKE_CXX_COMPILER_AR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_CXX_COMPILER_RANLIB
@@ -1325,5 +1317,5 @@ _CMAKE_CXX_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=FALSE
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 //CMAKE_INSTALL_PREFIX during last run
-_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/my_qt_project
+_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/HardwareVisualizer
 

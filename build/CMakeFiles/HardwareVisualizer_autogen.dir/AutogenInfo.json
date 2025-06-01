@@ -1,6 +1,6 @@
 {
 	"AUTOGEN_COMMAND_LINE_LENGTH_MAX" : 32000,
-	"BUILD_DIR" : "D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen",
+	"BUILD_DIR" : "D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen",
 	"CMAKE_BINARY_DIR" : "D:/CS/2025spring-programming/QThw/build",
 	"CMAKE_CURRENT_BINARY_DIR" : "D:/CS/2025spring-programming/QThw/build",
 	"CMAKE_CURRENT_SOURCE_DIR" : "D:/CS/2025spring-programming/QThw",
@@ -355,15 +355,26 @@
 		"D:/QT/6.9.0/mingw_64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginTargets.cmake",
 		"D:/QT/6.9.0/mingw_64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginTargets-relwithdebinfo.cmake",
 		"D:/QT/6.9.0/mingw_64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginAdditionalTargetInfo.cmake",
-		"D:/QT/6.9.0/mingw_64/lib/cmake/Qt6Widgets/Qt6WidgetsVersionlessAliasTargets.cmake",
-		"D:/CS/2025spring-programming/QThw/resources/resources.qrc"
+		"D:/QT/6.9.0/mingw_64/lib/cmake/Qt6Widgets/Qt6WidgetsVersionlessAliasTargets.cmake"
 	],
 	"CMAKE_SOURCE_DIR" : "D:/CS/2025spring-programming/QThw",
 	"CROSS_CONFIG" : false,
-	"DEP_FILE" : "D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/deps",
-	"DEP_FILE_RULE_NAME" : "my_qt_project_autogen/timestamp",
+	"DEP_FILE" : "D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "HardwareVisualizer_autogen/timestamp",
 	"HEADERS" : 
 	[
+		[
+			"D:/CS/2025spring-programming/QThw/src/hardwaremodule.h",
+			"MU",
+			"UVLADIE3JM/moc_hardwaremodule.cpp",
+			null
+		],
+		[
+			"D:/CS/2025spring-programming/QThw/src/hardwarevisualizer.h",
+			"MU",
+			"UVLADIE3JM/moc_hardwarevisualizer.cpp",
+			null
+		],
 		[
 			"D:/CS/2025spring-programming/QThw/src/mainwindow.h",
 			"MU",
@@ -372,8 +383,8 @@
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
-	"INCLUDE_DIR" : "D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/include",
-	"MOC_COMPILATION_FILE" : "D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/mocs_compilation.cpp",
+	"INCLUDE_DIR" : "D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/include",
+	"MOC_COMPILATION_FILE" : "D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/mocs_compilation.cpp",
 	"MOC_DEFINITIONS" : 
 	[
 		"MINGW_HAS_SECURE_API=1",
@@ -422,26 +433,36 @@
 	"MOC_PATH_PREFIX" : false,
 	"MOC_PREDEFS_CMD" : 
 	[
-		"D:/QT/Tools/mingw1310_64/bin/c++.exe",
+		"D:/Qt/Tools/mingw1310_64/bin/g++.exe",
 		"-std=gnu++17",
 		"-dM",
 		"-E",
 		"-c",
 		"D:/CMAKE/share/cmake-4.0/Modules/CMakeCXXCompilerABI.cpp"
 	],
-	"MOC_PREDEFS_FILE" : "D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/moc_predefs.h",
+	"MOC_PREDEFS_FILE" : "D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/moc_predefs.h",
 	"MOC_RELAXED_MODE" : false,
 	"MOC_SKIP" : [],
 	"MULTI_CONFIG" : false,
 	"PARALLEL" : 16,
-	"PARSE_CACHE_FILE" : "D:/CS/2025spring-programming/QThw/build/CMakeFiles/my_qt_project_autogen.dir/ParseCache.txt",
+	"PARSE_CACHE_FILE" : "D:/CS/2025spring-programming/QThw/build/CMakeFiles/HardwareVisualizer_autogen.dir/ParseCache.txt",
 	"QT_MOC_EXECUTABLE" : "D:/QT/6.9.0/mingw_64/bin/moc.exe",
 	"QT_UIC_EXECUTABLE" : "D:/QT/6.9.0/mingw_64/bin/uic.exe",
 	"QT_VERSION_MAJOR" : 6,
 	"QT_VERSION_MINOR" : 9,
-	"SETTINGS_FILE" : "D:/CS/2025spring-programming/QThw/build/CMakeFiles/my_qt_project_autogen.dir/AutogenUsed.txt",
+	"SETTINGS_FILE" : "D:/CS/2025spring-programming/QThw/build/CMakeFiles/HardwareVisualizer_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[
+			"D:/CS/2025spring-programming/QThw/src/hardwaremodule.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/CS/2025spring-programming/QThw/src/hardwarevisualizer.cpp",
+			"MU",
+			null
+		],
 		[ "D:/CS/2025spring-programming/QThw/src/main.cpp", "MU", null ],
 		[ "D:/CS/2025spring-programming/QThw/src/mainwindow.cpp", "MU", null ]
 	],

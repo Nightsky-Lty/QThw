@@ -7,7 +7,6 @@
 *****************************************************************************/
 
 #include "../../../src/mainwindow.h"
-#include <QtGui/qtextcursor.h>
 #include <QtCore/qmetatype.h>
 
 #include <QtCore/qtmochelpers.h>
@@ -40,13 +39,37 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
         "MainWindow",
-        "onButtonClicked",
-        ""
+        "addCPUCore",
+        "",
+        "addL2Cache",
+        "addL3Cache",
+        "addBus",
+        "addMemoryController",
+        "addDMAController",
+        "clearAll",
+        "loadConfiguration",
+        "loadStatistics"
     };
 
     QtMocHelpers::UintData qt_methods {
-        // Slot 'onButtonClicked'
+        // Slot 'addCPUCore'
         QtMocHelpers::SlotData<void()>(1, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'addL2Cache'
+        QtMocHelpers::SlotData<void()>(3, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'addL3Cache'
+        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'addBus'
+        QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'addMemoryController'
+        QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'addDMAController'
+        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'clearAll'
+        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'loadConfiguration'
+        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'loadStatistics'
+        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -70,7 +93,15 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     auto *_t = static_cast<MainWindow *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: _t->onButtonClicked(); break;
+        case 0: _t->addCPUCore(); break;
+        case 1: _t->addL2Cache(); break;
+        case 2: _t->addL3Cache(); break;
+        case 3: _t->addBus(); break;
+        case 4: _t->addMemoryController(); break;
+        case 5: _t->addDMAController(); break;
+        case 6: _t->clearAll(); break;
+        case 7: _t->loadConfiguration(); break;
+        case 8: _t->loadStatistics(); break;
         default: ;
         }
     }
@@ -96,14 +127,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 9;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 9)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 1;
+        _id -= 9;
     }
     return _id;
 }

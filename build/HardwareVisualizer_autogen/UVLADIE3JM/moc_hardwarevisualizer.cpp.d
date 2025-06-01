@@ -1,5 +1,11 @@
-D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/UVLADIE3JM/moc_mainwindow.cpp: D:/CS/2025spring-programming/QThw/src/mainwindow.h \
-  D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/moc_predefs.h \
+D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/moc_hardwarevisualizer.cpp: D:/CS/2025spring-programming/QThw/src/hardwarevisualizer.h \
+  D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/moc_predefs.h \
+  D:/CS/2025spring-programming/QThw/src/hardwaremodule.h \
+  D:/QT/6.9.0/mingw_64/include/QtCore/QMap \
+  D:/QT/6.9.0/mingw_64/include/QtCore/QObject \
+  D:/QT/6.9.0/mingw_64/include/QtCore/QPointF \
+  D:/QT/6.9.0/mingw_64/include/QtCore/QString \
+  D:/QT/6.9.0/mingw_64/include/QtCore/QVector \
   D:/QT/6.9.0/mingw_64/include/QtCore/q17memory.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/q20functional.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/q20iterator.h \
@@ -47,7 +53,6 @@ D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/UVLADIE3JM/moc_mai
   D:/QT/6.9.0/mingw_64/include/QtCore/qglobalstatic.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qhash.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qhashfunctions.h \
-  D:/QT/6.9.0/mingw_64/include/QtCore/qiodevice.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qiodevicebase.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qiterable.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qiterator.h \
@@ -120,13 +125,14 @@ D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/UVLADIE3JM/moc_mai
   D:/QT/6.9.0/mingw_64/include/QtCore/qtversionchecks.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qtypeinfo.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qtypes.h \
-  D:/QT/6.9.0/mingw_64/include/QtCore/qurl.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qutf8stringview.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qvariant.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qvarlengtharray.h \
+  D:/QT/6.9.0/mingw_64/include/QtCore/qvector.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qversiontagging.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qxptype_traits.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qyieldcpu.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/QColor \
   D:/QT/6.9.0/mingw_64/include/QtGui/qaction.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qbitmap.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qbrush.h \
@@ -140,31 +146,31 @@ D:/CS/2025spring-programming/QThw/build/my_qt_project_autogen/UVLADIE3JM/moc_mai
   D:/QT/6.9.0/mingw_64/include/QtGui/qimage.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qkeysequence.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpaintdevice.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/qpainter.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpalette.h \
-  D:/QT/6.9.0/mingw_64/include/QtGui/qpicture.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/qpen.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpixelformat.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpixmap.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpolygon.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qregion.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qrgb.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qrgba64.h \
-  D:/QT/6.9.0/mingw_64/include/QtGui/qtextdocument.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/qtextoption.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qtgui-config.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qtguiexports.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qtguiglobal.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qtransform.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qwindowdefs.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qwindowdefs_win.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/QLabel \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/QMainWindow \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/QPushButton \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qabstractbutton.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/QGraphicsScene \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/QGraphicsView \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/QWidget \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qabstractscrollarea.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qframe.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qlabel.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qmainwindow.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qpushbutton.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qgraphicsscene.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qgraphicsview.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qscrollarea.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qsizepolicy.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qtabwidget.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgets-config.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgetsexports.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgetsglobal.h \

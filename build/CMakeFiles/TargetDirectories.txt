@@ -1,5 +1,5 @@
-D:/CS/2025spring-programming/QThw/build/CMakeFiles/my_qt_project.dir
+D:/CS/2025spring-programming/QThw/build/CMakeFiles/HardwareVisualizer.dir
 D:/CS/2025spring-programming/QThw/build/CMakeFiles/edit_cache.dir
 D:/CS/2025spring-programming/QThw/build/CMakeFiles/rebuild_cache.dir
-D:/CS/2025spring-programming/QThw/build/CMakeFiles/my_qt_project_autogen_timestamp_deps.dir
-D:/CS/2025spring-programming/QThw/build/CMakeFiles/my_qt_project_autogen.dir
+D:/CS/2025spring-programming/QThw/build/CMakeFiles/HardwareVisualizer_autogen_timestamp_deps.dir
+D:/CS/2025spring-programming/QThw/build/CMakeFiles/HardwareVisualizer_autogen.dir
