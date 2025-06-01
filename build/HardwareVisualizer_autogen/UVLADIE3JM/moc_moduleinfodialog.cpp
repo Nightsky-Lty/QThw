@@ -1,12 +1,12 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'hardwarevisualizer.h'
+** Meta object code from reading C++ file 'moduleinfodialog.h'
 **
 ** Created by: The Qt Meta Object Compiler version 69 (Qt 6.9.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../../../src/hardwarevisualizer.h"
+#include "../../../src/moduleinfodialog.h"
 #include <QtGui/qtextcursor.h>
 #include <QtCore/qmetatype.h>
 
@@ -17,7 +17,7 @@
 
 #include <QtCore/qxptype_traits.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'hardwarevisualizer.h' doesn't include <QObject>."
+#error "The header file 'moduleinfodialog.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 69
 #error "This file was generated using the moc from 6.9.0. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -32,14 +32,14 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 QT_WARNING_DISABLE_GCC("-Wuseless-cast")
 namespace {
-struct qt_meta_tag_ZN18HardwareVisualizerE_t {};
+struct qt_meta_tag_ZN16ModuleInfoDialogE_t {};
 } // unnamed namespace
 
-template <> constexpr inline auto HardwareVisualizer::qt_create_metaobjectdata<qt_meta_tag_ZN18HardwareVisualizerE_t>()
+template <> constexpr inline auto ModuleInfoDialog::qt_create_metaobjectdata<qt_meta_tag_ZN16ModuleInfoDialogE_t>()
 {
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
-        "HardwareVisualizer"
+        "ModuleInfoDialog"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -48,44 +48,44 @@ template <> constexpr inline auto HardwareVisualizer::qt_create_metaobjectdata<q
     };
     QtMocHelpers::UintData qt_enums {
     };
-    return QtMocHelpers::metaObjectData<HardwareVisualizer, qt_meta_tag_ZN18HardwareVisualizerE_t>(QMC::MetaObjectFlag{}, qt_stringData,
+    return QtMocHelpers::metaObjectData<ModuleInfoDialog, qt_meta_tag_ZN16ModuleInfoDialogE_t>(QMC::MetaObjectFlag{}, qt_stringData,
             qt_methods, qt_properties, qt_enums);
 }
-Q_CONSTINIT const QMetaObject HardwareVisualizer::staticMetaObject = { {
-    QMetaObject::SuperData::link<QGraphicsView::staticMetaObject>(),
-    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN18HardwareVisualizerE_t>.stringdata,
-    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN18HardwareVisualizerE_t>.data,
+Q_CONSTINIT const QMetaObject ModuleInfoDialog::staticMetaObject = { {
+    QMetaObject::SuperData::link<QDialog::staticMetaObject>(),
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN16ModuleInfoDialogE_t>.stringdata,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN16ModuleInfoDialogE_t>.data,
     qt_static_metacall,
     nullptr,
-    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN18HardwareVisualizerE_t>.metaTypes,
+    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN16ModuleInfoDialogE_t>.metaTypes,
     nullptr
 } };
 
-void HardwareVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void ModuleInfoDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    auto *_t = static_cast<HardwareVisualizer *>(_o);
+    auto *_t = static_cast<ModuleInfoDialog *>(_o);
     (void)_t;
     (void)_c;
     (void)_id;
     (void)_a;
 }
 
-const QMetaObject *HardwareVisualizer::metaObject() const
+const QMetaObject *ModuleInfoDialog::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *HardwareVisualizer::qt_metacast(const char *_clname)
+void *ModuleInfoDialog::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN18HardwareVisualizerE_t>.strings))
+    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN16ModuleInfoDialogE_t>.strings))
         return static_cast<void*>(this);
-    return QGraphicsView::qt_metacast(_clname);
+    return QDialog::qt_metacast(_clname);
 }
 
-int HardwareVisualizer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int ModuleInfoDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QGraphicsView::qt_metacall(_c, _id, _a);
+    _id = QDialog::qt_metacall(_c, _id, _a);
     return _id;
 }
 QT_WARNING_POP

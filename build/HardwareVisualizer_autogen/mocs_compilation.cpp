@@ -2,3 +2,4 @@
 #include "UVLADIE3JM/moc_hardwaremodule.cpp"
 #include "UVLADIE3JM/moc_hardwarevisualizer.cpp"
 #include "UVLADIE3JM/moc_mainwindow.cpp"
+#include "UVLADIE3JM/moc_moduleinfodialog.cpp"

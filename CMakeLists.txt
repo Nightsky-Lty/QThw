@@ -30,6 +30,8 @@ set(PROJECT_SOURCES
     src/hardwaremodule.h
     src/hardwarevisualizer.cpp
     src/hardwarevisualizer.h
+    src/moduleinfodialog.cpp
+    src/moduleinfodialog.h
 )
 
 # 设置资源文件

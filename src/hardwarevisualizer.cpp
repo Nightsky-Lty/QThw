@@ -12,12 +12,15 @@
 #include <QtMath>
 #include <QDebug>
 #include <QPainterPath>
+#include <QRegularExpression>
+#include <algorithm>
 
 HardwareVisualizer::HardwareVisualizer(QWidget *parent)
     : QGraphicsView(parent)
     , m_scene(new QGraphicsScene(this))
     , m_draggedItem(nullptr)
     , m_busModule(nullptr)
+    , m_infoDialog(nullptr)
 {
     setScene(m_scene);
     setRenderHint(QPainter::Antialiasing);
@@ -36,6 +39,7 @@ HardwareVisualizer::HardwareVisualizer(QWidget *parent)
 
 HardwareVisualizer::~HardwareVisualizer()
 {
+    delete m_infoDialog;
     clearModules();
 }
 
@@ -125,32 +129,43 @@ void HardwareVisualizer::autoLayout()
     const double moduleWidth = 150.0;
     const double moduleHeight = 100.0;
     const double horizontalSpacing = 200.0;  // 模块之间的水平间距
-    const double verticalSpacing = 150.0;    // 层之间的垂直间距
+    const double verticalSpacing = 150.0;    // 垂直间距
 
-    // 计算每层的垂直位置
-    const double cpuY = centerY - verticalSpacing * 2;    // CPU层
-    const double l2Y = centerY - verticalSpacing;         // L2缓存层
-    const double l3Y = centerY;                           // L3缓存层
-    const double busY = centerY + verticalSpacing;        // 总线层
+    // 计算每列的水平位置（从左到右）
+    const double cpuX = centerX - horizontalSpacing * 2.5;    // CPU列
+    const double l2X = centerX - horizontalSpacing * 1.5;     // L2缓存列
+    const double l3X = centerX - horizontalSpacing * 0.5;     // L3缓存列
+    const double busX = centerX + horizontalSpacing * 0.5;    // 总线列
+    const double dmaX = centerX + horizontalSpacing * 1.5;    // DMA和内存控制器列
 
     // 为每个模块分配位置
-    QList<HardwareModule*> cpuModules;      // CPU核心
-    QList<HardwareModule*> l2Modules;       // L2缓存
-    QList<HardwareModule*> l3Modules;       // L3缓存
-    QList<HardwareModule*> busModules;      // 总线、内存控制器、DMA
+    QMap<int, HardwareModule*> cpuModules;      // CPU核心 (index -> module)
+    QMap<int, HardwareModule*> l2Modules;       // L2缓存 (index -> module)
+    QMap<int, HardwareModule*> l3Modules;       // L3缓存 (index -> module)
+    QList<HardwareModule*> busModules;          // 总线、内存控制器、DMA
     
     // 对模块进行分类
     for (auto it = m_moduleItems.begin(); it != m_moduleItems.end(); ++it) {
         HardwareModule* module = it.key();
+        QString name = module->name();
+        int index = -1;
+
+        // 提取模块编号
+        QRegularExpression re("\\d+");
+        QRegularExpressionMatch match = re.match(name);
+        if (match.hasMatch()) {
+            index = match.captured(0).toInt();  // 直接使用模块名中的数字作为索引
+        }
+        
         switch (module->type()) {
             case HardwareModule::CPU_CORE:
-                cpuModules.append(module);
+                cpuModules[index] = module;
                 break;
             case HardwareModule::CACHE_L2:
-                l2Modules.append(module);
+                l2Modules[index] = module;
                 break;
             case HardwareModule::CACHE_L3:
-                l3Modules.append(module);
+                l3Modules[index] = module;
                 break;
             case HardwareModule::BUS:
             case HardwareModule::MEMORY_CTRL:
@@ -160,46 +175,47 @@ void HardwareVisualizer::autoLayout()
         }
     }
 
-    // 排序模块以确保顺序一致
-    auto moduleSort = [](HardwareModule* a, HardwareModule* b) {
-        return a->name().right(1).toInt() < b->name().right(1).toInt();
-    };
-    std::sort(cpuModules.begin(), cpuModules.end(), moduleSort);
-    std::sort(l2Modules.begin(), l2Modules.end(), moduleSort);
-    std::sort(l3Modules.begin(), l3Modules.end(), moduleSort);
+    // 计算总行数（基于CPU数量）
+    int rowCount = cpuModules.size();
+    double startY = centerY - (rowCount - 1) * verticalSpacing / 2;
 
-    // 布局CPU核心
-    int cpuCount = cpuModules.size();
-    double cpuStartX = centerX - (cpuCount - 1) * horizontalSpacing / 2;
-    for (int i = 0; i < cpuCount; ++i) {
-        cpuModules[i]->setPosition(QPointF(cpuStartX + i * horizontalSpacing, cpuY));
-    }
+    // 布局每一行的组件（CPU、L2、L3）
+    QList<int> indices = cpuModules.keys();
+    std::sort(indices.begin(), indices.end());  // 确保按索引顺序布局
 
-    // 布局L2缓存（在对应CPU下方）
-    for (auto l2Cache : l2Modules) {
-        int index = l2Cache->name().right(1).toInt() - 1;
-        if (index >= 0 && index < cpuCount) {
-            QPointF cpuPos = cpuModules[index]->position();
-            l2Cache->setPosition(QPointF(cpuPos.x(), l2Y));
+    for (int i = 0; i < indices.size(); ++i) {
+        int index = indices[i];
+        double rowY = startY + i * verticalSpacing;
+        
+        // 放置CPU
+        if (cpuModules.contains(index)) {
+            cpuModules[index]->setPosition(QPointF(cpuX, rowY));
+        }
+        
+        // 放置L2缓存
+        if (l2Modules.contains(index)) {
+            l2Modules[index]->setPosition(QPointF(l2X, rowY));
+        }
+        
+        // 放置L3缓存（每两个CPU共享一个L3）
+        if (i % 2 == 0 && l3Modules.contains(index/2)) {
+            double l3Y = rowY + verticalSpacing * 0.5;  // L3位于两个CPU之间
+            if (i == indices.size() - 1) {  // 如果是最后一个CPU
+                l3Y = rowY;  // L3直接与CPU对齐
+            }
+            l3Modules[index/2]->setPosition(QPointF(l3X, l3Y));
         }
     }
 
-    // 布局L3缓存（每两个CPU共享一个L3）
-    int l3Count = l3Modules.size();
-    double l3StartX = centerX - (l3Count - 1) * horizontalSpacing * 1.2 / 2;
-    for (int i = 0; i < l3Count; ++i) {
-        l3Modules[i]->setPosition(QPointF(l3StartX + i * horizontalSpacing * 1.2, l3Y));
-    }
-
-    // 布局总线层（总线在中间，DMA在左边，内存控制器在右边）
+    // 布局总线和其他组件
     for (auto module : busModules) {
         QPointF pos;
         if (module->type() == HardwareModule::BUS) {
-            pos = QPointF(centerX, busY);
+            pos = QPointF(busX, centerY);  // 总线在中间
         } else if (module->type() == HardwareModule::DMA) {
-            pos = QPointF(centerX - horizontalSpacing * 1.5, busY);
+            pos = QPointF(dmaX, centerY - verticalSpacing * 0.5);  // DMA在上方
         } else if (module->type() == HardwareModule::MEMORY_CTRL) {
-            pos = QPointF(centerX + horizontalSpacing * 1.5, busY);
+            pos = QPointF(dmaX, centerY + verticalSpacing * 0.5);  // 内存控制器在下方
         }
         module->setPosition(pos);
     }
@@ -320,7 +336,7 @@ void HardwareVisualizer::drawConnections()
             }
         }
     }
-    
+
     // 绘制连接线和数据流量
     const auto& edges = m_busModule->busEdges();
     const auto& portMap = m_busModule->busPortToNodeMap();
@@ -344,62 +360,22 @@ void HardwareVisualizer::drawConnections()
         }
         
         if (fromModule && toModule) {
-            // 计算连接线的起点和终点
-            QPointF fromPos = fromModule->position();
-            QPointF toPos = toModule->position();
-            
-            // 根据模块类型调整连接点
-            QPointF fromCenter, toCenter;
-            
-            // 确定连接点位置
-            auto getConnectionPoint = [](HardwareModule* module, const QPointF& otherPos) {
-                QPointF pos = module->position();
-                QPointF center(pos.x() + 75, pos.y() + 50);
-                
-                // 根据模块类型和相对位置调整连接点
-                if (module->type() == HardwareModule::CPU_CORE || 
-                    module->type() == HardwareModule::CACHE_L2) {
-                    // CPU和L2缓存优先使用底部连接
-                    return QPointF(center.x(), pos.y() + 100);
-                } else if (module->type() == HardwareModule::CACHE_L3) {
-                    // L3缓存根据相对位置选择连接点
-                    if (otherPos.y() > pos.y()) {
-                        return QPointF(center.x(), pos.y() + 100); // 底部
-                    } else {
-                        return QPointF(center.x(), pos.y()); // 顶部
-                    }
-                } else {
-                    // 其他模块使用中心点
-                    return center;
-                }
-            };
-            
-            fromCenter = getConnectionPoint(fromModule, toPos);
-            toCenter = getConnectionPoint(toModule, fromPos);
+            // 获取连接点
+            QPointF fromPoint = getConnectionPoint(fromModule, toModule->position());
+            QPointF toPoint = getConnectionPoint(toModule, fromModule->position());
             
             // 创建贝塞尔曲线路径
             QPainterPath path;
-            path.moveTo(fromCenter);
+            path.moveTo(fromPoint);
             
             // 计算控制点
-            QPointF midPoint = (fromCenter + toCenter) / 2;
-            QPointF ctrl1, ctrl2;
+            double dx = (toPoint.x() - fromPoint.x()) * 0.5;
+            QPointF ctrl1(fromPoint.x() + dx, fromPoint.y());
+            QPointF ctrl2(toPoint.x() - dx, toPoint.y());
             
-            // 根据模块类型和位置关系调整控制点
-            double dx = (toCenter.x() - fromCenter.x()) * 0.25;
-            double dy = (toCenter.y() - fromCenter.y()) * 0.25;
+            path.cubicTo(ctrl1, ctrl2, toPoint);
             
-            // 对于垂直连接使用更大的曲线
-            if (qAbs(toCenter.y() - fromCenter.y()) > qAbs(toCenter.x() - fromCenter.x())) {
-                dx *= 2;
-            }
-            
-            ctrl1 = QPointF(fromCenter.x() + dx, fromCenter.y() + dy);
-            ctrl2 = QPointF(toCenter.x() - dx, toCenter.y() - dy);
-            
-            path.cubicTo(ctrl1, ctrl2, toCenter);
-            
-            // 创建路径项
+            // 设置线条样式
             double rate = getDataTransferRate(fromModule, toModule);
             int penWidth = qMax(1, qMin(5, int(rate * 10)));
             
@@ -417,6 +393,7 @@ void HardwareVisualizer::drawConnections()
                 QGraphicsTextItem* rateText = new QGraphicsTextItem(
                     QString::number(rate * 100, 'f', 1) + "%");
                 rateText->setDefaultTextColor(Qt::blue);
+                QPointF midPoint = (fromPoint + toPoint) / 2;
                 rateText->setPos(midPoint);
                 m_scene->addItem(rateText);
             }
@@ -575,4 +552,66 @@ QString HardwareVisualizer::getModuleTypeName(HardwareModule::ModuleType type) c
         default:
             return "Unknown";
     }
+}
+
+QPointF HardwareVisualizer::getConnectionPoint(HardwareModule* module, const QPointF& otherPos)
+{
+    QPointF pos = module->position();
+    QPointF center(pos.x() + 75, pos.y() + 50);
+    
+    // 根据模块的相对位置决定连接点
+    if (otherPos.x() > pos.x()) {
+        // 如果目标在右边，使用右侧连接点
+        return QPointF(pos.x() + 150, center.y());
+    } else if (otherPos.x() < pos.x()) {
+        // 如果目标在左边，使用左侧连接点
+        return QPointF(pos.x(), center.y());
+    } else if (otherPos.y() > pos.y()) {
+        // 如果目标在下方，使用底部连接点
+        return QPointF(center.x(), pos.y() + 100);
+    } else {
+        // 如果目标在上方，使用顶部连接点
+        return QPointF(center.x(), pos.y());
+    }
+}
+
+void HardwareVisualizer::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        QPointF scenePos = mapToScene(event->pos());
+        HardwareModule* module = getModuleAtPosition(scenePos);
+        
+        if (module) {
+            // 如果已经有对话框，先删除它
+            if (m_infoDialog) {
+                delete m_infoDialog;
+                m_infoDialog = nullptr;
+            }
+            
+            // 创建新的对话框
+            m_infoDialog = new ModuleInfoDialog(module, m_moduleItems, this);
+            m_infoDialog->show();
+        }
+    }
+    QGraphicsView::mouseDoubleClickEvent(event);
+}
+
+HardwareModule* HardwareVisualizer::getModuleAtPosition(const QPointF& pos) const
+{
+    QGraphicsItem* item = scene()->itemAt(pos, transform());
+    if (!item) return nullptr;
+
+    // 如果点击到的是组内项目，获取其父组
+    if (item->group()) {
+        item = item->group();
+    }
+
+    // 查找对应的模块
+    for (auto it = m_moduleItems.begin(); it != m_moduleItems.end(); ++it) {
+        if (it.value() == item) {
+            return it.key();
+        }
+    }
+    
+    return nullptr;
 } 

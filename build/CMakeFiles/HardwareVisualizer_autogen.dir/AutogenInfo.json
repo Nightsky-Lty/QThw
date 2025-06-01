@@ -380,6 +380,12 @@
 			"MU",
 			"UVLADIE3JM/moc_mainwindow.cpp",
 			null
+		],
+		[
+			"D:/CS/2025spring-programming/QThw/src/moduleinfodialog.h",
+			"MU",
+			"UVLADIE3JM/moc_moduleinfodialog.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -464,7 +470,12 @@
 			null
 		],
 		[ "D:/CS/2025spring-programming/QThw/src/main.cpp", "MU", null ],
-		[ "D:/CS/2025spring-programming/QThw/src/mainwindow.cpp", "MU", null ]
+		[ "D:/CS/2025spring-programming/QThw/src/mainwindow.cpp", "MU", null ],
+		[
+			"D:/CS/2025spring-programming/QThw/src/moduleinfodialog.cpp",
+			"MU",
+			null
+		]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

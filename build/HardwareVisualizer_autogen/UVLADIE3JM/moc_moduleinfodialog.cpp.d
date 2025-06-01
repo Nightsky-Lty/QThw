@@ -1,8 +1,6 @@
-D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/moc_mainwindow.cpp: D:/CS/2025spring-programming/QThw/src/mainwindow.h \
+D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/moc_moduleinfodialog.cpp: D:/CS/2025spring-programming/QThw/src/moduleinfodialog.h \
   D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/moc_predefs.h \
   D:/CS/2025spring-programming/QThw/src/hardwaremodule.h \
-  D:/CS/2025spring-programming/QThw/src/hardwarevisualizer.h \
-  D:/CS/2025spring-programming/QThw/src/moduleinfodialog.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/QMap \
   D:/QT/6.9.0/mingw_64/include/QtCore/QObject \
   D:/QT/6.9.0/mingw_64/include/QtCore/QPointF \
@@ -136,8 +134,6 @@ D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/mo
   D:/QT/6.9.0/mingw_64/include/QtCore/qversiontagging.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qxptype_traits.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qyieldcpu.h \
-  D:/QT/6.9.0/mingw_64/include/QtGui/QAction \
-  D:/QT/6.9.0/mingw_64/include/QtGui/QColor \
   D:/QT/6.9.0/mingw_64/include/QtGui/qaction.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qbitmap.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qbrush.h \
@@ -151,7 +147,6 @@ D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/mo
   D:/QT/6.9.0/mingw_64/include/QtGui/qimage.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qkeysequence.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpaintdevice.h \
-  D:/QT/6.9.0/mingw_64/include/QtGui/qpainter.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpainterpath.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpalette.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpen.h \
@@ -174,32 +169,21 @@ D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/mo
   D:/QT/6.9.0/mingw_64/include/QtGui/qwindowdefs_win.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/QDialog \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/QGraphicsItem \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/QGraphicsScene \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/QGraphicsView \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/QLabel \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/QMainWindow \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/QTextBrowser \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/QToolBar \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/QVBoxLayout \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/QWidget \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qabstractscrollarea.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qboxlayout.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qdialog.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qframe.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qgraphicsitem.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qgraphicsscene.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qgraphicsview.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qgridlayout.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qlabel.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qlayout.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qlayoutitem.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qmainwindow.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qscrollarea.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qsizepolicy.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qtabwidget.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtextbrowser.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtextedit.h \
-  D:/QT/6.9.0/mingw_64/include/QtWidgets/qtoolbar.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgets-config.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgetsexports.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgetsglobal.h \

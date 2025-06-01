@@ -94,6 +94,16 @@ build CMakeFiles/HardwareVisualizer.dir/src/hardwarevisualizer.cpp.obj: CXX_COMP
   TARGET_COMPILE_PDB = CMakeFiles\HardwareVisualizer.dir\
   TARGET_PDB = HardwareVisualizer.pdb
 
+build CMakeFiles/HardwareVisualizer.dir/src/moduleinfodialog.cpp.obj: CXX_COMPILER__HardwareVisualizer_unscanned_ D$:/CS/2025spring-programming/QThw/src/moduleinfodialog.cpp || cmake_object_order_depends_target_HardwareVisualizer
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  DEP_FILE = CMakeFiles\HardwareVisualizer.dir\src\moduleinfodialog.cpp.obj.d
+  FLAGS = -std=gnu++17
+  INCLUDES = -ID:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/include -isystem D:/QT/6.9.0/mingw_64/include/QtCore -isystem D:/QT/6.9.0/mingw_64/include -isystem D:/QT/6.9.0/mingw_64/mkspecs/win32-g++ -isystem D:/QT/6.9.0/mingw_64/include/QtGui -isystem D:/QT/6.9.0/mingw_64/include/QtWidgets
+  OBJECT_DIR = CMakeFiles\HardwareVisualizer.dir
+  OBJECT_FILE_DIR = CMakeFiles\HardwareVisualizer.dir\src
+  TARGET_COMPILE_PDB = CMakeFiles\HardwareVisualizer.dir\
+  TARGET_PDB = HardwareVisualizer.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target HardwareVisualizer
@@ -102,7 +112,7 @@ build CMakeFiles/HardwareVisualizer.dir/src/hardwarevisualizer.cpp.obj: CXX_COMP
 #############################################
 # Link the executable HardwareVisualizer.exe
 
-build HardwareVisualizer.exe: CXX_EXECUTABLE_LINKER__HardwareVisualizer_ CMakeFiles/HardwareVisualizer.dir/HardwareVisualizer_autogen/mocs_compilation.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/main.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/mainwindow.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/hardwaremodule.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/hardwarevisualizer.cpp.obj | D$:/QT/6.9.0/mingw_64/lib/libQt6Widgets.a D$:/QT/6.9.0/mingw_64/lib/libQt6Gui.a D$:/QT/6.9.0/mingw_64/lib/libQt6Core.a || HardwareVisualizer_autogen HardwareVisualizer_autogen_timestamp_deps
+build HardwareVisualizer.exe: CXX_EXECUTABLE_LINKER__HardwareVisualizer_ CMakeFiles/HardwareVisualizer.dir/HardwareVisualizer_autogen/mocs_compilation.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/main.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/mainwindow.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/hardwaremodule.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/hardwarevisualizer.cpp.obj CMakeFiles/HardwareVisualizer.dir/src/moduleinfodialog.cpp.obj | D$:/QT/6.9.0/mingw_64/lib/libQt6Widgets.a D$:/QT/6.9.0/mingw_64/lib/libQt6Gui.a D$:/QT/6.9.0/mingw_64/lib/libQt6Core.a || HardwareVisualizer_autogen HardwareVisualizer_autogen_timestamp_deps
   LINK_LIBRARIES = D:/QT/6.9.0/mingw_64/lib/libQt6Widgets.a  D:/QT/6.9.0/mingw_64/lib/libQt6Gui.a  D:/QT/6.9.0/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -ld3d11  -ldxgi  -ldxguid  -ld3d12  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\HardwareVisualizer.dir
   POST_BUILD = C:\Windows\system32\cmd.exe /C "cd /D D:\CS\2025spring-programming\QThw\build && D:\CMAKE\bin\cmake.exe -E make_directory D:/CS/2025spring-programming/QThw/build/resources/ && D:\CMAKE\bin\cmake.exe -E copy_if_different D:/CS/2025spring-programming/QThw/resources/setup.txt D:/CS/2025spring-programming/QThw/resources/statistic.txt D:/CS/2025spring-programming/QThw/build/resources/"

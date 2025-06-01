@@ -18,16 +18,13 @@ public:
     ~MainWindow();
 
 private slots:
-    void clearAll();
-    void loadConfiguration();
-    void loadStatistics();
-    void resetToInitial();  // 新添加的重置功能
+    void resetToInitial();
 
 private:
     void createToolBar();
     void createActions();
     void setupInitialLayout();
-    void createDefaultLayout();
+    void loadConfiguration();
     
     // 从配置文件加载硬件配置
     void loadSetupFile(const QString& filename);
@@ -43,9 +40,6 @@ private:
 
     // 工具栏动作
     QAction *m_resetAction;
-    QAction *m_clearAction;
-    QAction *m_loadConfigAction;
-    QAction *m_loadStatsAction;
 };
 
 #endif // MAINWINDOW_H 

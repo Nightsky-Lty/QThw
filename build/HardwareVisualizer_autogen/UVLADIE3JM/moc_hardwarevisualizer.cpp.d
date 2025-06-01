@@ -1,6 +1,7 @@
 D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/moc_hardwarevisualizer.cpp: D:/CS/2025spring-programming/QThw/src/hardwarevisualizer.h \
   D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/moc_predefs.h \
   D:/CS/2025spring-programming/QThw/src/hardwaremodule.h \
+  D:/CS/2025spring-programming/QThw/src/moduleinfodialog.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/QMap \
   D:/QT/6.9.0/mingw_64/include/QtCore/QObject \
   D:/QT/6.9.0/mingw_64/include/QtCore/QPointF \
@@ -53,6 +54,7 @@ D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/mo
   D:/QT/6.9.0/mingw_64/include/QtCore/qglobalstatic.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qhash.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qhashfunctions.h \
+  D:/QT/6.9.0/mingw_64/include/QtCore/qiodevice.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qiodevicebase.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qiterable.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qiterator.h \
@@ -125,6 +127,7 @@ D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/mo
   D:/QT/6.9.0/mingw_64/include/QtCore/qtversionchecks.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qtypeinfo.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qtypes.h \
+  D:/QT/6.9.0/mingw_64/include/QtCore/qurl.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qutf8stringview.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qvariant.h \
   D:/QT/6.9.0/mingw_64/include/QtCore/qvarlengtharray.h \
@@ -147,14 +150,19 @@ D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/mo
   D:/QT/6.9.0/mingw_64/include/QtGui/qkeysequence.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpaintdevice.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpainter.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/qpainterpath.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpalette.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpen.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/qpicture.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpixelformat.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpixmap.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qpolygon.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qregion.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qrgb.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qrgba64.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/qtextcursor.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/qtextdocument.h \
+  D:/QT/6.9.0/mingw_64/include/QtGui/qtextformat.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qtextoption.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qtgui-config.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qtguiexports.h \
@@ -162,15 +170,29 @@ D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/mo
   D:/QT/6.9.0/mingw_64/include/QtGui/qtransform.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qwindowdefs.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qwindowdefs_win.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/QDialog \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/QGraphicsItem \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/QGraphicsScene \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/QGraphicsView \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/QLabel \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/QTextBrowser \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/QVBoxLayout \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/QWidget \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qabstractscrollarea.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qboxlayout.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qdialog.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qframe.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qgraphicsitem.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qgraphicsscene.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qgraphicsview.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qgridlayout.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qlabel.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qlayout.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qlayoutitem.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qscrollarea.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qsizepolicy.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qtextbrowser.h \
+  D:/QT/6.9.0/mingw_64/include/QtWidgets/qtextedit.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgets-config.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgetsexports.h \
   D:/QT/6.9.0/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
