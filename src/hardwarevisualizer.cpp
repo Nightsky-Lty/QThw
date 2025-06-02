@@ -170,6 +170,7 @@ void HardwareVisualizer::autoLayout()
             case HardwareModule::BUS:
             case HardwareModule::MEMORY_CTRL:
             case HardwareModule::DMA:
+            case HardwareModule::CACHE_EVENT_TRACER:
                 busModules.append(module);
                 break;
         }
@@ -252,6 +253,9 @@ void HardwareVisualizer::autoLayout()
             pos = QPointF(dmaX, centerY - verticalSpacing * 0.5);  // DMA在上方
         } else if (module->type() == HardwareModule::MEMORY_CTRL) {
             pos = QPointF(dmaX, centerY + verticalSpacing * 0.5);  // 内存控制器在下方
+        } else if (module->type() == HardwareModule::CACHE_EVENT_TRACER) {
+            // 缓存事件追踪器放在DMA上方
+            pos = QPointF(dmaX, centerY - verticalSpacing * 1.5);
         }
         module->setPosition(pos);
     }
@@ -333,6 +337,7 @@ void HardwareVisualizer::drawConnections()
     // 清除旧的连接线
     for (QGraphicsItem* item : m_scene->items()) {
         if (item->type() == QGraphicsLineItem::Type ||
+            item->type() == QGraphicsPathItem::Type ||
             (item->type() == QGraphicsTextItem::Type && 
              item->parentItem() == nullptr)) {
             m_scene->removeItem(item);
@@ -370,39 +375,141 @@ void HardwareVisualizer::drawConnections()
             QPointF fromPoint = getConnectionPoint(fromModule, toModule->position());
             QPointF toPoint = getConnectionPoint(toModule, fromModule->position());
             
-            // 创建贝塞尔曲线路径
-            QPainterPath pathObj;
-            pathObj.moveTo(fromPoint);
+            // 获取模块类型，用于确定连线样式
+            auto fromType = fromModule->type();
+            auto toType = toModule->type();
             
-            // 计算控制点
-            double dx = (toPoint.x() - fromPoint.x()) * 0.5;
-            QPointF ctrl1(fromPoint.x() + dx, fromPoint.y());
-            QPointF ctrl2(toPoint.x() - dx, toPoint.y());
+            // 计算弯曲程度 - 根据模块类型确定
+            double curvature = 0.2;  // 默认弯曲程度
             
-            pathObj.cubicTo(ctrl1, ctrl2, toPoint);
-            
-            // 计算数据传输率
-            double rate = getDataTransferRate(fromModule, toModule);
-            
-            // 设置线条样式
-            int penWidth = qMax(1, qMin(5, int(rate * 10)));
-            QPen pen(Qt::darkGray, penWidth);
-            if (rate > 0.1) {
-                pen.setColor(QColor(255, 128, 0));
+            // 根据模块组合类型调整弯曲程度
+            if ((fromType == HardwareModule::CPU_CORE && toType == HardwareModule::CACHE_L2) ||
+                (fromType == HardwareModule::CACHE_L2 && toType == HardwareModule::CPU_CORE)) {
+                curvature = 0.1;  // CPU和L2缓存之间的连线弯曲较小
+            } else if ((fromType == HardwareModule::CACHE_L2 && toType == HardwareModule::CACHE_L3) ||
+                      (fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::CACHE_L2)) {
+                curvature = 0.15;  // L2和L3缓存之间的连线中等弯曲
+            } else if ((fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::BUS) ||
+                      (fromType == HardwareModule::BUS && toType == HardwareModule::CACHE_L3)) {
+                curvature = 0.25;  // L3缓存和总线之间的连线弯曲较大
             }
             
-            QGraphicsPathItem* pathItem = new QGraphicsPathItem(pathObj);
+            // 计算中点和控制点
+            QPointF midPoint = (fromPoint + toPoint) / 2;
+            double dist = QLineF(fromPoint, toPoint).length() * curvature;
+            
+            // 计算垂直于连线的方向向量
+            QPointF dir = toPoint - fromPoint;
+            double len = QLineF(QPointF(0, 0), dir).length();
+            QPointF normal(-dir.y() / len, dir.x() / len);
+            
+            // 创建路径
+            QPainterPath path;
+            path.moveTo(fromPoint);
+            QPointF ctrl = midPoint + normal * dist;
+            path.quadTo(ctrl, toPoint);
+            
+            // 根据模块类型设置连线颜色
+            QColor lineColor;
+            
+            if ((fromType == HardwareModule::CPU_CORE && toType == HardwareModule::CACHE_L2) ||
+                (fromType == HardwareModule::CACHE_L2 && toType == HardwareModule::CPU_CORE)) {
+                lineColor = QColor(220, 20, 60);  // 猩红色 - CPU到L2缓存
+            } else if ((fromType == HardwareModule::CACHE_L2 && toType == HardwareModule::CACHE_L3) ||
+                      (fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::CACHE_L2)) {
+                lineColor = QColor(0, 128, 0);    // 绿色 - L2到L3缓存
+            } else if ((fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::BUS) ||
+                      (fromType == HardwareModule::BUS && toType == HardwareModule::CACHE_L3)) {
+                lineColor = QColor(70, 130, 180); // 钢蓝色 - L3到总线
+            } else if ((fromType == HardwareModule::BUS && toType == HardwareModule::MEMORY_CTRL) ||
+                      (fromType == HardwareModule::MEMORY_CTRL && toType == HardwareModule::BUS)) {
+                lineColor = QColor(255, 140, 0);  // 深橙色 - 总线到内存控制器
+            } else if ((fromType == HardwareModule::BUS && toType == HardwareModule::DMA) ||
+                      (fromType == HardwareModule::DMA && toType == HardwareModule::BUS)) {
+                lineColor = QColor(138, 43, 226); // 紫罗兰色 - 总线到DMA
+            } else if ((fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::CACHE_L3)) {
+                lineColor = QColor(30, 144, 255); // 道奇蓝 - L3缓存间通信
+            } else {
+                lineColor = QColor(105, 105, 105); // 暗灰色 - 其他连接
+            }
+            
+            // 设置线条样式
+            QPen pen(lineColor, 1.5);
+            
+            // 创建并添加路径
+            QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
             pathItem->setPen(pen);
             m_scene->addItem(pathItem);
             
-            // 添加数据流量标签
-            if (rate > 0) {
-                QString infoText = QString::number(rate * 100, 'f', 1) + "%";
-                QGraphicsTextItem* infoTextItem = new QGraphicsTextItem(infoText);
-                infoTextItem->setDefaultTextColor(Qt::blue);
-                QPointF midPoint = (fromPoint + toPoint) / 2;
-                infoTextItem->setPos(midPoint);
-                m_scene->addItem(infoTextItem);
+            // 添加箭头指示方向
+            QPointF direction = toPoint - fromPoint;
+            double length = QLineF(QPointF(0, 0), direction).length();
+            if (length > 0) {
+                direction = QPointF(direction.x() / length, direction.y() / length);
+                
+                // 箭头点坐标计算
+                QPointF arrowP1 = toPoint - direction * 15 + QPointF(-direction.y(), direction.x()) * 5;
+                QPointF arrowP2 = toPoint - direction * 15 - QPointF(-direction.y(), direction.x()) * 5;
+                
+                // 创建箭头路径
+                QPainterPath arrowPath;
+                arrowPath.moveTo(toPoint);
+                arrowPath.lineTo(arrowP1);
+                arrowPath.lineTo(arrowP2);
+                arrowPath.closeSubpath();
+                
+                // 添加箭头
+                QGraphicsPathItem* arrow = new QGraphicsPathItem(arrowPath);
+                arrow->setBrush(lineColor);
+                arrow->setPen(QPen(lineColor));
+                m_scene->addItem(arrow);
+            }
+            
+            // 可选：添加连接类型标签
+            QString connectionType;
+            if ((fromType == HardwareModule::CPU_CORE && toType == HardwareModule::CACHE_L2) ||
+                (fromType == HardwareModule::CACHE_L2 && toType == HardwareModule::CPU_CORE)) {
+                connectionType = "CPU-L2";
+            } else if ((fromType == HardwareModule::CACHE_L2 && toType == HardwareModule::CACHE_L3) ||
+                      (fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::CACHE_L2)) {
+                connectionType = "L2-L3";
+            } else if ((fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::BUS) ||
+                      (fromType == HardwareModule::BUS && toType == HardwareModule::CACHE_L3)) {
+                connectionType = "L3-Bus";
+            } else if ((fromType == HardwareModule::BUS && toType == HardwareModule::MEMORY_CTRL) ||
+                      (fromType == HardwareModule::MEMORY_CTRL && toType == HardwareModule::BUS)) {
+                connectionType = "Bus-Mem";
+            } else if ((fromType == HardwareModule::BUS && toType == HardwareModule::DMA) ||
+                      (fromType == HardwareModule::DMA && toType == HardwareModule::BUS)) {
+                connectionType = "Bus-DMA";
+            } else if ((fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::CACHE_L3)) {
+                connectionType = "L3-L3";
+            }
+            
+            // 获取可能的数据流量信息（可选显示）
+            double dataRate = 0.0;
+            int fromPort = fromModule->portId();
+            int toPort = toModule->portId();
+            
+            if (fromPort >= 0 && toPort >= 0) {
+                QString key = QString("transmit_package_number_from_%1_to_%2")
+                            .arg(fromPort).arg(toPort);
+                dataRate = m_busModule->statistic(key);
+            }
+            
+            // 根据需要决定是否显示数据流量
+            bool showDataRate = false;  // 设置为true可以同时显示连接类型和数据流量
+            
+            if (!connectionType.isEmpty()) {
+                QString labelText = connectionType;
+                if (showDataRate && dataRate > 0) {
+                    labelText += QString(" (%1)").arg(int(dataRate));
+                }
+                
+                QGraphicsTextItem* typeLabel = new QGraphicsTextItem(labelText);
+                typeLabel->setDefaultTextColor(lineColor);
+                typeLabel->setPos(midPoint + normal * dist * 0.5);
+                m_scene->addItem(typeLabel);
             }
         }
     }
@@ -412,14 +519,23 @@ double HardwareVisualizer::getDataTransferRate(HardwareModule* from, HardwareMod
 {
     if (!from || !to || !m_busModule) return 0.0;
     
-    // 获取端口ID - 直接使用模块的portId函数
+    // 获取端口ID
     int fromPort = from->portId();
     int toPort = to->portId();
     
     if (fromPort >= 0 && toPort >= 0) {
-        QString key = QString("transmit_package_number_from_%1_to_%2")
-                        .arg(fromPort).arg(toPort);
-        return m_busModule->statistic(key) / 1000.0;  // 归一化显示
+        // 先尝试从→到的直接连接
+        QString key1 = QString("transmit_package_number_from_%1_to_%2")
+                      .arg(fromPort).arg(toPort);
+        double rate1 = m_busModule->statistic(key1);
+        
+        // 再尝试到→从的反向连接
+        QString key2 = QString("transmit_package_number_from_%1_to_%2")
+                      .arg(toPort).arg(fromPort);
+        double rate2 = m_busModule->statistic(key2);  
+        
+        // 返回两个方向上较大的传输率
+        return qMax(rate1, rate2);
     }
     
     return 0.0;
@@ -477,6 +593,22 @@ QString HardwareVisualizer::createStatsText(HardwareModule* module) const
             }
             break;
         }
+        case HardwareModule::CACHE_EVENT_TRACER: {
+            // 显示缓存事件统计信息
+            if (stats.contains("l1miss_l2hit_cnt")) {
+                text += formatStatistic("L1 Miss, L2 Hit", stats["l1miss_l2hit_cnt"]) + "\n";
+            }
+            if (stats.contains("l1miss_l2miss_l3hit_cnt")) {
+                text += formatStatistic("L2 Miss, L3 Hit", stats["l1miss_l2miss_l3hit_cnt"]) + "\n";
+            }
+            if (stats.contains("l1miss_l2miss_l3miss_cnt")) {
+                text += formatStatistic("L3 Miss (Mem)", stats["l1miss_l2miss_l3miss_cnt"]) + "\n";
+            }
+            if (stats.contains("l1miss_l2miss_l3forward_cnt")) {
+                text += formatStatistic("L3 Forward", stats["l1miss_l2miss_l3forward_cnt"]) + "\n";
+            }
+            break;
+        }
         default:
             break;
     }
@@ -514,6 +646,8 @@ QColor HardwareVisualizer::getModuleColor(HardwareModule::ModuleType type) const
             return QColor(255, 200, 255); // 浅紫色
         case HardwareModule::DMA:
             return QColor(200, 255, 255); // 浅青色
+        case HardwareModule::CACHE_EVENT_TRACER:
+            return QColor(255, 228, 181); // 浅杏色
         default:
             return QColor(240, 240, 240); // 浅灰色
     }
@@ -534,8 +668,10 @@ QString HardwareVisualizer::getModuleTypeName(HardwareModule::ModuleType type) c
             return "Memory Controller";
         case HardwareModule::DMA:
             return "DMA Controller";
+        case HardwareModule::CACHE_EVENT_TRACER:
+            return "Cache Event Tracer";
         default:
-            return "Unknown";
+            return "Unknown Module";
     }
 }
 
@@ -608,13 +744,18 @@ bool HardwareVisualizer::isValidLogicalConnection(HardwareModule* from, Hardware
     auto fromType = from->type();
     auto toType = to->type();
 
+    // 缓存事件追踪器不与其他模块建立连接
+    if (fromType == HardwareModule::CACHE_EVENT_TRACER || toType == HardwareModule::CACHE_EVENT_TRACER) {
+        return false;
+    }
+
     // 提取硬件编号
     auto getHardwareIndex = [](HardwareModule* module) -> int {
         // 从名称提取最后的数字作为硬件编号
-        QRegularExpression re("\\d+");
+        QRegularExpression re("(\\d+)$");  // 修改为只匹配末尾的数字
         QRegularExpressionMatch match = re.match(module->name());
         if (match.hasMatch()) {
-            return match.captured(0).toInt();
+            return match.captured(1).toInt();  // 使用捕获组1
         }
         return -1;
     };

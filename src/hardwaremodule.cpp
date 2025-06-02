@@ -8,6 +8,7 @@ HardwareModule::HardwareModule(ModuleType type, const QString &name, QObject *pa
     , m_busPortNumber(0)
     , m_nuca_index(0)
     , m_nuca_num(0)
+    , m_memoryDataWidth(0)
 {
 }
 

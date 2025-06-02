@@ -93,17 +93,21 @@ void MainWindow::loadSetupFile(const QString& filename)
     QMap<int, int> portToNodeMap;
     int portNumber = 0;
     int currentPortId = -1;  // 用于临时存储当前读取到的portId
+    
+    // 用于存储缓存配置
+    HardwareModule::CacheConfig l1i, l1d, l2, l3;
+    int nucaIndex = -1;
+    int nucaNum = -1;
+
+    // 当前正在处理的模块指针
+    HardwareModule* currentModule = nullptr;
 
     while (!in.atEnd()) {
         line = in.readLine().trimmed();
         if (line.isEmpty() || line.startsWith("//")) continue;
 
-        if (line.startsWith("port_id:")) {  // 新增：读取portId
-            currentPortId = line.split(":").last().trimmed().toInt();
-            continue;
-        }
-
         if (line.contains("@1tick")) {
+            
             QString moduleName = line.split("@").first().trimmed();
             
             // 创建对应类型的模块
@@ -120,18 +124,20 @@ void MainWindow::loadSetupFile(const QString& filename)
                 type = HardwareModule::MEMORY_CTRL;
             } else if (moduleName.startsWith("DMA")) {
                 type = HardwareModule::DMA;
+            } else if (moduleName == "cache_event_trace") {
+                type = HardwareModule::CACHE_EVENT_TRACER;
             } else {
                 continue;
             }
             
             auto module = new HardwareModule(type, moduleName, this);
-            if (currentPortId != -1) {  // 新增：设置portId
-                module->setPortId(currentPortId);
-                currentPortId = -1;  // 重置currentPortId
-            }
+            currentPortId = -1;
             m_modules.append(module);
             m_moduleMap[moduleName] = module;
             m_visualizer->addModule(module);
+            
+            // 更新当前处理的模块
+            currentModule = module;
             
             if (type == HardwareModule::BUS) {
                 currentBus = module;
@@ -153,6 +159,77 @@ void MainWindow::loadSetupFile(const QString& filename)
                 int from = match.captured(1).toInt();
                 int to = match.captured(2).toInt();
                 busEdges.append({from, to});
+            }
+        } else if (line.startsWith("port_id:")) {
+            currentPortId = line.split(":").last().trimmed().toInt();
+            if (currentModule) {
+                currentModule->setPortId(currentPortId);
+            }
+        } else if (currentModule) {
+            // 处理L3缓存配置
+            if (currentModule->type() == HardwareModule::CACHE_L3) {
+                if (line.startsWith("way_count:")) {
+                    l3.wayCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("set_count:")) {
+                    l3.setCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("mshr_count:")) {
+                    l3.mshrCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("index_width:")) {
+                    l3.indexWidth = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("index_latency:")) {
+                    l3.indexLatency = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("nuca_index:")) {
+                    nucaIndex = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("nuca_num:")) {
+                    nucaNum = line.split(":").last().trimmed().toInt();
+                    
+                    // 如果读取了完整的配置，则设置L3缓存
+                    if (l3.wayCount > 0 && l3.setCount > 0 && nucaIndex >= 0 && nucaNum > 0) {
+                        currentModule->setL3CacheConfig(l3, nucaIndex, nucaNum);
+                        // 重置配置，为下一个模块做准备
+                        l3 = HardwareModule::CacheConfig();
+                        nucaIndex = -1;
+                        nucaNum = -1;
+                    }
+                }
+            } 
+            // 处理L2缓存配置
+            else if (currentModule->type() == HardwareModule::CACHE_L2) {
+                if (line.startsWith("l1i_way_count:")) {
+                    l1i.wayCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("l1i_set_count:")) {
+                    l1i.setCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("l1d_way_count:")) {
+                    l1d.wayCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("l1d_set_count:")) {
+                    l1d.setCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("l2_way_count:")) {
+                    l2.wayCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("l2_set_count:")) {
+                    l2.setCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("l2_mshr_count:")) {
+                    l2.mshrCount = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("l2_index_width:")) {
+                    l2.indexWidth = line.split(":").last().trimmed().toInt();
+                } else if (line.startsWith("l2_index_latency:")) {
+                    l2.indexLatency = line.split(":").last().trimmed().toInt();
+                    
+                    // 如果读取了完整的配置，则设置L2缓存
+                    if (l1i.wayCount > 0 && l1i.setCount > 0 && 
+                        l1d.wayCount > 0 && l1d.setCount > 0 && 
+                        l2.wayCount > 0 && l2.setCount > 0) {
+                        currentModule->setL2CacheConfig(l1i, l1d, l2);
+                        // 重置配置，为下一个模块做准备
+                        l1i = l1d = l2 = HardwareModule::CacheConfig();
+                    }
+                }
+            }
+            // 处理内存控制器配置
+            else if (currentModule->type() == HardwareModule::MEMORY_CTRL) {
+                if (line.startsWith("data_width:")) {
+                    int dataWidth = line.split(":").last().trimmed().toInt();
+                    currentModule->setMemoryConfig(dataWidth);
+                }
             }
         }
     }

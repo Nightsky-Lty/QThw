@@ -19,7 +19,8 @@ public:
         CACHE_L3,    // L3Cache0-L3Cache3
         BUS,         // Bus
         MEMORY_CTRL, // MemoryNode0
-        DMA          // DMA
+        DMA,         // DMA
+        CACHE_EVENT_TRACER  // 缓存事件追踪器
     };
 
     // 构造函数
@@ -65,10 +66,22 @@ public:
                          int nucaIndex,
                          int nucaNum);
 
+    // 获取缓存配置
+    const CacheConfig& l1iConfig() const { return m_l1i; }
+    const CacheConfig& l1dConfig() const { return m_l1d; }
+    const CacheConfig& l2Config() const { return m_l2; }
+    const CacheConfig& l3Config() const { return m_l3; }
+    int nucaIndex() const { return m_nuca_index; }
+    int nucaNum() const { return m_nuca_num; }
+
     // 性能统计
     void setStatistic(const QString &key, double value);
     double statistic(const QString &key) const;
     QMap<QString, double> statistics() const { return m_statistics; }
+
+    // 内存控制器配置
+    void setMemoryConfig(int dataWidth) { m_memoryDataWidth = dataWidth; }
+    int memoryDataWidth() const { return m_memoryDataWidth; }
 
 signals:
     void configurationChanged();
@@ -94,6 +107,9 @@ private:
     CacheConfig m_l3;
     int m_nuca_index;
     int m_nuca_num;
+    
+    // 内存控制器配置
+    int m_memoryDataWidth;
 };
 
 #endif // HARDWAREMODULE_H 
