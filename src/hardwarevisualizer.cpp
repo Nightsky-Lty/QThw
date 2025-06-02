@@ -14,6 +14,7 @@
 #include <QPainterPath>
 #include <QRegularExpression>
 #include <algorithm>
+#include <QQueue>
 
 HardwareVisualizer::HardwareVisualizer(QWidget *parent)
     : QGraphicsView(parent)
@@ -147,14 +148,13 @@ void HardwareVisualizer::autoLayout()
     // 对模块进行分类
     for (auto it = m_moduleItems.begin(); it != m_moduleItems.end(); ++it) {
         HardwareModule* module = it.key();
-        QString name = module->name();
+        
+        // 提取硬件编号 - 匹配名称末尾的数字
+        QRegularExpression re("(\\d+)$");  // 匹配字符串末尾的数字
+        QRegularExpressionMatch match = re.match(module->name());
         int index = -1;
-
-        // 提取模块编号
-        QRegularExpression re("\\d+");
-        QRegularExpressionMatch match = re.match(name);
         if (match.hasMatch()) {
-            index = match.captured(0).toInt();  // 直接使用模块名中的数字作为索引
+            index = match.captured(1).toInt();  // 从名称中提取硬件编号
         }
         
         switch (module->type()) {
@@ -175,35 +175,71 @@ void HardwareVisualizer::autoLayout()
         }
     }
 
-    // 计算总行数（基于CPU数量）
-    int rowCount = cpuModules.size();
+    // 首先设置CPU的位置
+    QList<int> cpuIndices = cpuModules.keys();
+    std::sort(cpuIndices.begin(), cpuIndices.end());  // 确保按索引顺序布局
+    
+    int rowCount = cpuIndices.size();
     double startY = centerY - (rowCount - 1) * verticalSpacing / 2;
-
-    // 布局每一行的组件（CPU、L2、L3）
-    QList<int> indices = cpuModules.keys();
-    std::sort(indices.begin(), indices.end());  // 确保按索引顺序布局
-
-    for (int i = 0; i < indices.size(); ++i) {
-        int index = indices[i];
+    
+    // 设置CPU位置并存储位置信息
+    QMap<int, QPointF> cpuPositions;
+    for (int i = 0; i < cpuIndices.size(); ++i) {
+        int index = cpuIndices[i];
         double rowY = startY + i * verticalSpacing;
         
-        // 放置CPU
-        if (cpuModules.contains(index)) {
-            cpuModules[index]->setPosition(QPointF(cpuX, rowY));
-        }
+        // 设置CPU位置
+        cpuModules[index]->setPosition(QPointF(cpuX, rowY));
+        cpuPositions[index] = QPointF(cpuX, rowY);
+    }
+
+    // 为L2缓存设置位置 - 与对应的CPU保持相同的Y坐标
+    for (auto it = l2Modules.begin(); it != l2Modules.end(); ++it) {
+        HardwareModule* l2Module = it.value();
+        int index = it.key();
         
-        // 放置L2缓存
-        if (l2Modules.contains(index)) {
-            l2Modules[index]->setPosition(QPointF(l2X, rowY));
+        if (cpuPositions.contains(index)) {
+            // 使用对应CPU的Y坐标，但X坐标固定在L2列
+            QPointF cpuPos = cpuPositions[index];
+            l2Module->setPosition(QPointF(l2X, cpuPos.y()));
+        } else {
+            // 如果没有对应的CPU，使用默认位置
+            l2Module->setPosition(QPointF(l2X, centerY));
         }
-        
-        // 放置L3缓存（每两个CPU共享一个L3）
-        if (i % 2 == 0 && l3Modules.contains(index/2)) {
-            double l3Y = rowY + verticalSpacing * 0.5;  // L3位于两个CPU之间
-            if (i == indices.size() - 1) {  // 如果是最后一个CPU
-                l3Y = rowY;  // L3直接与CPU对齐
+    }
+
+    // 为L3缓存设置位置 - 按照CPU的分布
+    QList<int> l3Indices = l3Modules.keys();
+    std::sort(l3Indices.begin(), l3Indices.end());
+    
+    if (!l3Indices.isEmpty()) {
+        // 获取CPU的Y坐标范围
+        double minY = centerY;
+        double maxY = centerY;
+        if (!cpuPositions.isEmpty()) {
+            minY = maxY = cpuPositions.begin().value().y();
+            for (auto pos : cpuPositions) {
+                minY = qMin(minY, pos.y());
+                maxY = qMax(maxY, pos.y());
             }
-            l3Modules[index/2]->setPosition(QPointF(l3X, l3Y));
+        }
+        
+        // 在CPU的Y坐标范围内均匀分布L3缓存
+        double l3Range = qMax(maxY - minY, 10.0);  // 防止范围太小
+        
+        for (int i = 0; i < l3Indices.size(); ++i) {
+            int l3Index = l3Indices[i];
+            double yPos;
+            
+            if (l3Indices.size() == 1) {
+                // 如果只有一个L3，放在中间
+                yPos = (minY + maxY) / 2;
+            } else {
+                // 多个L3缓存均匀分布
+                yPos = minY + (l3Range * i) / (l3Indices.size() - 1);
+            }
+            
+            l3Modules[l3Index]->setPosition(QPointF(l3X, yPos));
         }
     }
 
@@ -220,10 +256,7 @@ void HardwareVisualizer::autoLayout()
         module->setPosition(pos);
     }
 
-    // 更新所有模块位置并重绘连接
-    for (auto it = m_moduleItems.begin(); it != m_moduleItems.end(); ++it) {
-        updateModulePosition(it.key());
-    }
+    // 重绘连接
     drawConnections();
 }
 
@@ -309,77 +342,67 @@ void HardwareVisualizer::drawConnections()
 
     if (!m_busModule) return;
 
-    // 创建端口到模块的映射
-    QMap<int, HardwareModule*> portToModule;
-    for (auto it = m_moduleItems.begin(); it != m_moduleItems.end(); ++it) {
-        HardwareModule* module = it.key();
-        if (module->type() != HardwareModule::BUS) {
-            int portId = module->portId();
-            if (portId >= 0) {
-                portToModule[portId] = module;
-            }
-        }
-    }
+    // 用于记录已经绘制的连接
+    QSet<QPair<HardwareModule*, HardwareModule*>> drawnConnections;
 
-    // 绘制连接线和数据流量
-    const auto& edges = m_busModule->busEdges();
-    const auto& portMap = m_busModule->busPortToNodeMap();
-    
-    for (const auto& edge : edges) {
-        int fromNodeId = edge.first;
-        int toNodeId = edge.second;
+    // 直接枚举所有模块对，检查它们之间是否应该有逻辑连接
+    for (auto it1 = m_moduleItems.begin(); it1 != m_moduleItems.end(); ++it1) {
+        HardwareModule* fromModule = it1.key();
         
-        // 找到连接的模块
-        HardwareModule* fromModule = nullptr;
-        HardwareModule* toModule = nullptr;
-        
-        // 通过节点ID找到对应的端口和模块
-        for (auto it = portMap.begin(); it != portMap.end(); ++it) {
-            if (it.value() == fromNodeId && portToModule.contains(it.key())) {
-                fromModule = portToModule[it.key()];
-            }
-            if (it.value() == toNodeId && portToModule.contains(it.key())) {
-                toModule = portToModule[it.key()];
-            }
-        }
-        
-        if (fromModule && toModule) {
+        for (auto it2 = m_moduleItems.begin(); it2 != m_moduleItems.end(); ++it2) {
+            HardwareModule* toModule = it2.key();
+            
+            // 跳过自身连接
+            if (fromModule == toModule) continue;
+            
+            // 检查是否已经绘制过这对模块的连接
+            QPair<HardwareModule*, HardwareModule*> connectionPair(
+                qMin(fromModule, toModule), qMax(fromModule, toModule));
+            if (drawnConnections.contains(connectionPair)) continue;
+            
+            // 检查是否为有效的逻辑连接
+            if (!isValidLogicalConnection(fromModule, toModule)) continue;
+            
+            // 标记为已绘制
+            drawnConnections.insert(connectionPair);
+            
             // 获取连接点
             QPointF fromPoint = getConnectionPoint(fromModule, toModule->position());
             QPointF toPoint = getConnectionPoint(toModule, fromModule->position());
             
             // 创建贝塞尔曲线路径
-            QPainterPath path;
-            path.moveTo(fromPoint);
+            QPainterPath pathObj;
+            pathObj.moveTo(fromPoint);
             
             // 计算控制点
             double dx = (toPoint.x() - fromPoint.x()) * 0.5;
             QPointF ctrl1(fromPoint.x() + dx, fromPoint.y());
             QPointF ctrl2(toPoint.x() - dx, toPoint.y());
             
-            path.cubicTo(ctrl1, ctrl2, toPoint);
+            pathObj.cubicTo(ctrl1, ctrl2, toPoint);
+            
+            // 计算数据传输率
+            double rate = getDataTransferRate(fromModule, toModule);
             
             // 设置线条样式
-            double rate = getDataTransferRate(fromModule, toModule);
             int penWidth = qMax(1, qMin(5, int(rate * 10)));
-            
             QPen pen(Qt::darkGray, penWidth);
             if (rate > 0.1) {
                 pen.setColor(QColor(255, 128, 0));
             }
             
-            QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+            QGraphicsPathItem* pathItem = new QGraphicsPathItem(pathObj);
             pathItem->setPen(pen);
             m_scene->addItem(pathItem);
             
             // 添加数据流量标签
             if (rate > 0) {
-                QGraphicsTextItem* rateText = new QGraphicsTextItem(
-                    QString::number(rate * 100, 'f', 1) + "%");
-                rateText->setDefaultTextColor(Qt::blue);
+                QString infoText = QString::number(rate * 100, 'f', 1) + "%";
+                QGraphicsTextItem* infoTextItem = new QGraphicsTextItem(infoText);
+                infoTextItem->setDefaultTextColor(Qt::blue);
                 QPointF midPoint = (fromPoint + toPoint) / 2;
-                rateText->setPos(midPoint);
-                m_scene->addItem(rateText);
+                infoTextItem->setPos(midPoint);
+                m_scene->addItem(infoTextItem);
             }
         }
     }
@@ -389,28 +412,9 @@ double HardwareVisualizer::getDataTransferRate(HardwareModule* from, HardwareMod
 {
     if (!from || !to || !m_busModule) return 0.0;
     
-    // 获取端口ID
-    int fromPort = -1;
-    int toPort = -1;
-    
-    // 从模块名称获取端口ID
-    auto getPortId = [](HardwareModule* module) -> int {
-        switch (module->type()) {
-            case HardwareModule::CPU_CORE:
-                return module->name().right(1).toInt();
-            case HardwareModule::CACHE_L2:
-                return module->name().right(1).toInt();
-            case HardwareModule::CACHE_L3:
-                return module->name().right(1).toInt() + 4;
-            case HardwareModule::MEMORY_CTRL:
-                return 4;
-            default:
-                return -1;
-        }
-    };
-    
-    fromPort = getPortId(from);
-    toPort = getPortId(to);
+    // 获取端口ID - 直接使用模块的portId函数
+    int fromPort = from->portId();
+    int toPort = to->portId();
     
     if (fromPort >= 0 && toPort >= 0) {
         QString key = QString("transmit_package_number_from_%1_to_%2")
@@ -461,9 +465,6 @@ QString HardwareVisualizer::createStatsText(HardwareModule* module) const
         case HardwareModule::BUS: {
             if (stats.contains("transmit_package_number")) {
                 text += formatStatistic("Packages", stats["transmit_package_number"]) + "\n";
-            }
-            if (stats.contains("avg_transmit_latency")) {
-                text += formatStatistic("Avg Latency", stats["avg_transmit_latency"]) + "\n";
             }
             break;
         }
@@ -598,4 +599,89 @@ HardwareModule* HardwareVisualizer::getModuleAtPosition(const QPointF& pos) cons
     }
     
     return nullptr;
+}
+
+bool HardwareVisualizer::isValidLogicalConnection(HardwareModule* from, HardwareModule* to) const
+{
+    if (!from || !to) return false;
+    
+    auto fromType = from->type();
+    auto toType = to->type();
+
+    // 提取硬件编号
+    auto getHardwareIndex = [](HardwareModule* module) -> int {
+        // 从名称提取最后的数字作为硬件编号
+        QRegularExpression re("\\d+");
+        QRegularExpressionMatch match = re.match(module->name());
+        if (match.hasMatch()) {
+            return match.captured(0).toInt();
+        }
+        return -1;
+    };
+
+    int fromIndex = getHardwareIndex(from);
+    int toIndex = getHardwareIndex(to);
+
+    // CPU核心只与自己对应的L2缓存通信
+    if (fromType == HardwareModule::CPU_CORE && toType == HardwareModule::CACHE_L2) {
+        // 检查是否为对应的CPU和L2（通常是相同索引）
+        return fromIndex == toIndex;
+    }
+    
+    // L2缓存只与对应的CPU和任何一个L3缓存bank通信
+    if (fromType == HardwareModule::CACHE_L2) {
+        if (toType == HardwareModule::CPU_CORE) {
+            // 检查是否为对应的L2和CPU
+            return fromIndex == toIndex;
+        }
+        else if (toType == HardwareModule::CACHE_L3) {
+            // 任何L2缓存都可以访问任何L3缓存bank
+            // 在实际系统中，这取决于内存地址映射
+            return true;
+        }
+        else {
+            // L2缓存不与其他类型的模块直接通信
+            return false;
+        }
+    }
+    
+    // L3缓存bank与任何L2缓存和总线通信
+    if (fromType == HardwareModule::CACHE_L3) {
+        if (toType == HardwareModule::CACHE_L2) {
+            // 任何L3缓存bank都可以与任何L2缓存通信
+            return true;
+        }
+        else if (toType == HardwareModule::BUS) {
+            // L3缓存可以与总线通信
+            return true;
+        }
+        else if (toType == HardwareModule::CACHE_L3) {
+            // L3缓存bank之间可以互相通信以保持一致性
+            return true;
+        }
+        else {
+            // L3缓存不与其他类型的模块直接通信
+            return false;
+        }
+    }
+    
+    // 总线可以与L3缓存、内存控制器和DMA通信
+    if (fromType == HardwareModule::BUS) {
+        return toType == HardwareModule::CACHE_L3 || 
+               toType == HardwareModule::MEMORY_CTRL || 
+               toType == HardwareModule::DMA;
+    }
+    
+    // 内存控制器只与总线通信
+    if (fromType == HardwareModule::MEMORY_CTRL) {
+        return toType == HardwareModule::BUS;
+    }
+    
+    // DMA控制器只与总线通信
+    if (fromType == HardwareModule::DMA) {
+        return toType == HardwareModule::BUS;
+    }
+    
+    // 其他情况默认为无效连接
+    return false;
 } 

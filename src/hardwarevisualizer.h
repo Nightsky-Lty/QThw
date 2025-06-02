@@ -64,6 +64,8 @@ private:
     double getDataTransferRate(HardwareModule* from, HardwareModule* to) const;
     // 格式化统计信息
     QString formatStatistic(const QString& key, double value) const;
+    // 检查两个模块之间是否有有效的逻辑连接
+    bool isValidLogicalConnection(HardwareModule* from, HardwareModule* to) const;
 };
 
 #endif // HARDWAREVISUALIZER_H 
