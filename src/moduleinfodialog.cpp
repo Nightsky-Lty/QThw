@@ -52,7 +52,8 @@ void ModuleInfoDialog::updateModuleInfo()
         if (!m_module->busPortToNodeMap().isEmpty()) {
             info += "<h4>Port to Node Mapping</h4>";
             info += "<table border='0' cellspacing='3'>";
-            for (auto it = m_module->busPortToNodeMap().begin(); it != m_module->busPortToNodeMap().end(); ++it) {
+            const QMap<int,int>& portMap = m_module->busPortToNodeMap();
+            for (auto it = portMap.begin(); it != portMap.end(); ++it) {
                 info += QString("<tr><td><b>Port %1:</b></td><td>Node %2</td></tr>").arg(it.key()).arg(it.value());
             }
             info += "</table>";

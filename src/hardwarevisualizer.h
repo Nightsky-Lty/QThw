@@ -51,7 +51,7 @@ private:
     
     // 硬件模块图标
     QMap<HardwareModule::ModuleType, QPixmap> m_moduleIcons;
-    
+
     // 创建不同类型硬件模块的图形项
     QGraphicsItem* createModuleItem(HardwareModule* module);
     // 更新模块的统计信息显示

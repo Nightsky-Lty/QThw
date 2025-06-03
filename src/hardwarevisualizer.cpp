@@ -81,6 +81,12 @@ void HardwareVisualizer::addModule(HardwareModule* module)
                     }
                 }
             });
+    
+    // 连接统计数据变化的信号
+    connect(module, &HardwareModule::statisticsChanged,
+            this, [this, module]() {
+                updateStatistics(module);
+            });
             
     // 如果已经有总线模块，执行自动布局
     if (m_busModule) {
@@ -111,17 +117,20 @@ QGraphicsItem* HardwareVisualizer::createModuleItem(HardwareModule* module)
     nameFont.setBold(true);
     nameFont.setPointSize(10);
     nameText->setFont(nameFont);
-    nameText->setPos(10, 75);
+    nameText->setPos(10, -10);
+    nameText->setData(Qt::UserRole, "name");  // 添加标识
     group->addToGroup(nameText);
-    
+
     // 添加统计信息
-    QGraphicsTextItem* statsText = new QGraphicsTextItem(createStatsText(module));
-    statsText->setDefaultTextColor(Qt::white);
-    QFont statsFont = statsText->font();
+    QString statsText = createStatsText(module);
+    QGraphicsTextItem* statsTextItem = new QGraphicsTextItem(statsText);
+    statsTextItem->setDefaultTextColor(Qt::white);
+    QFont statsFont = statsTextItem->font();
     statsFont.setPointSize(8);
-    statsText->setFont(statsFont);
-    statsText->setPos(10, 55);
-    group->addToGroup(statsText);
+    statsTextItem->setFont(statsFont);
+    statsTextItem->setPos(10, 90);
+    statsTextItem->setData(Qt::UserRole, "stats");  // 添加标识
+    group->addToGroup(statsTextItem);
     
     // 移除可移动标志，只保留可选择标志
     group->setFlag(QGraphicsItem::ItemIsSelectable);
@@ -452,6 +461,13 @@ QString HardwareVisualizer::createStatsText(HardwareModule* module) const
     QString text;
     const auto& stats = module->statistics();
     
+    // 添加调试输出
+    // qDebug() << "Creating stats text for module:" << module->name();
+    // qDebug() << "Stats count:" << stats.size();
+    // for (auto it = stats.begin(); it != stats.end(); ++it) {
+    //     qDebug() << "  Key:" << it.key() << "Value:" << it.value();
+    // }
+    
     switch (module->type()) {
         case HardwareModule::CPU_CORE: {
             if (stats.contains("finished_inst_count")) {
@@ -508,6 +524,7 @@ QString HardwareVisualizer::createStatsText(HardwareModule* module) const
             break;
     }
     
+    // qDebug() << "Final stats text:" << text;
     return text;
 }
 
@@ -517,8 +534,10 @@ void HardwareVisualizer::updateStatistics(HardwareModule* module)
         // 更新统计信息
         for (auto child : item->childItems()) {
             if (auto textItem = qgraphicsitem_cast<QGraphicsTextItem*>(child)) {
-                if (textItem->pos().y() >= 45) {  // 统计信息的Y位置
-                    textItem->setPlainText(createStatsText(module));
+                // 使用数据标识来识别统计信息文本项
+                if (textItem->data(Qt::UserRole).toString() == "stats") {
+                    QString newStatsText = createStatsText(module);
+                    textItem->setPlainText(newStatsText);
                     break;
                 }
             }
@@ -821,18 +840,15 @@ void HardwareVisualizer::setBackgroundBrush(const QBrush &brush)
 
 void HardwareVisualizer::mousePressEvent(QMouseEvent *event)
 {
-    // 禁用拖拽功能
     QGraphicsView::mousePressEvent(event);
 }
 
 void HardwareVisualizer::mouseMoveEvent(QMouseEvent *event)
 {
-    // 禁用拖拽功能
     QGraphicsView::mouseMoveEvent(event);
 }
 
 void HardwareVisualizer::mouseReleaseEvent(QMouseEvent *event)
 {
-    // 禁用拖拽功能
     QGraphicsView::mouseReleaseEvent(event);
 } 

@@ -51,6 +51,10 @@ void HardwareModule::setStatistic(const QString &key, double value)
         m_statistics[key] = value;
         changed = true;
     }
+    
+    if (changed) {
+        emit statisticsChanged();
+    }
 }
 
 double HardwareModule::statistic(const QString &key) const

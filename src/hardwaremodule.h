@@ -46,8 +46,8 @@ public:
     void setBusConfig(int portNumber, const QMap<int, int> &portToNodeMap,
                      const QVector<QPair<int, int>> &edges);
     int busPortNumber() const { return m_busPortNumber; }
-    QMap<int, int> busPortToNodeMap() const { return m_busPortToNodeMap; }
-    QVector<QPair<int, int>> busEdges() const { return m_busEdges; }
+    const QMap<int, int>& busPortToNodeMap() const { return m_busPortToNodeMap; }
+    const QVector<QPair<int, int>>& busEdges() const { return m_busEdges; }
 
     // 缓存配置
     struct CacheConfig {
@@ -77,7 +77,7 @@ public:
     // 性能统计
     void setStatistic(const QString &key, double value);
     double statistic(const QString &key) const;
-    QMap<QString, double> statistics() const { return m_statistics; }
+    const QMap<QString, double>& statistics() const { return m_statistics; }
 
     // 内存控制器配置
     void setMemoryConfig(int dataWidth) { m_memoryDataWidth = dataWidth; }
@@ -85,6 +85,7 @@ public:
 
 signals:
     void positionChanged(const QPointF &newPos);
+    void statisticsChanged();
 
 private:
     ModuleType m_type;
