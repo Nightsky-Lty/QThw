@@ -138,6 +138,7 @@ D:/CS/2025spring-programming/QThw/build/HardwareVisualizer_autogen/UVLADIE3JM/mo
   D:/QT/6.9.0/mingw_64/include/QtCore/qyieldcpu.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/QAction \
   D:/QT/6.9.0/mingw_64/include/QtGui/QColor \
+  D:/QT/6.9.0/mingw_64/include/QtGui/QPixmap \
   D:/QT/6.9.0/mingw_64/include/QtGui/qaction.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qbitmap.h \
   D:/QT/6.9.0/mingw_64/include/QtGui/qbrush.h \

@@ -15,6 +15,9 @@
 #include <QRegularExpression>
 #include <algorithm>
 #include <QQueue>
+#include <QGraphicsDropShadowEffect>
+#include <QPixmap>
+#include <QPainter>
 
 HardwareVisualizer::HardwareVisualizer(QWidget *parent)
     : QGraphicsView(parent)
@@ -34,8 +37,17 @@ HardwareVisualizer::HardwareVisualizer(QWidget *parent)
     // 设置场景大小
     m_scene->setSceneRect(-500, -500, 1000, 1000);
     
-    // 设置背景
-    setBackgroundBrush(QBrush(QColor(240, 240, 240)));
+    // 设置现代化背景
+    QLinearGradient bgGradient(0, -500, 0, 500);
+    bgGradient.setColorAt(0, QColor(32, 33, 36));
+    bgGradient.setColorAt(1, QColor(42, 43, 46));
+    setBackgroundBrush(QBrush(bgGradient));
+    
+    // 加载模块图标
+    loadModuleIcons();
+    
+    // 绘制网格线
+    drawGrid();
 }
 
 HardwareVisualizer::~HardwareVisualizer()
@@ -59,11 +71,7 @@ void HardwareVisualizer::addModule(HardwareModule* module)
     m_moduleItems[module] = item;
     m_scene->addItem(item);
     
-    // 连接信号
-    connect(module, &HardwareModule::configurationChanged,
-            this, [this, module]() { updateModulePosition(module); });
-    connect(module, &HardwareModule::statisticsChanged,
-            this, [this, module]() { updateStatistics(module); });
+    // 连接位置变化的信号
     connect(module, &HardwareModule::positionChanged,
             this, [this, module](const QPointF &newPos) {
                 if (auto item = m_moduleItems.value(module)) {
@@ -84,38 +92,38 @@ QGraphicsItem* HardwareVisualizer::createModuleItem(HardwareModule* module)
 {
     QGraphicsItemGroup* group = new QGraphicsItemGroup;
     
-    // 创建模块主体
-    QGraphicsRectItem* rect = new QGraphicsRectItem(0, 0, 150, 100);
-    rect->setBrush(QBrush(getModuleColor(module->type())));
-    rect->setPen(QPen(Qt::black));
-    group->addToGroup(rect);
+    // 使用硬件图标代替矩形
+    QGraphicsPixmapItem* pixmapItem = new QGraphicsPixmapItem(m_moduleIcons[module->type()]);
     
-    // 添加模块名称
+    // 添加阴影效果
+    QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
+    shadow->setOffset(3, 3);
+    shadow->setBlurRadius(10);
+    shadow->setColor(QColor(0, 0, 0, 80));
+    pixmapItem->setGraphicsEffect(shadow);
+    
+    group->addToGroup(pixmapItem);
+    
+    // 添加模块名称 - 位置放在图标下方
     QGraphicsTextItem* nameText = new QGraphicsTextItem(module->name());
-    nameText->setDefaultTextColor(Qt::black);
+    nameText->setDefaultTextColor(Qt::white);
     QFont nameFont = nameText->font();
     nameFont.setBold(true);
     nameFont.setPointSize(10);
     nameText->setFont(nameFont);
-    nameText->setPos(5, 5);
+    nameText->setPos(10, 75);
     group->addToGroup(nameText);
     
-    // 添加类型标签
-    QGraphicsTextItem* typeText = new QGraphicsTextItem(getModuleTypeName(module->type()));
-    typeText->setDefaultTextColor(Qt::darkGray);
-    typeText->setPos(5, 25);
-    group->addToGroup(typeText);
-
     // 添加统计信息
     QGraphicsTextItem* statsText = new QGraphicsTextItem(createStatsText(module));
-    statsText->setDefaultTextColor(Qt::black);
+    statsText->setDefaultTextColor(Qt::white);
     QFont statsFont = statsText->font();
     statsFont.setPointSize(8);
     statsText->setFont(statsFont);
-    statsText->setPos(5, 45);
+    statsText->setPos(10, 55);
     group->addToGroup(statsText);
     
-    group->setFlag(QGraphicsItem::ItemIsMovable);
+    // 移除可移动标志，只保留可选择标志
     group->setFlag(QGraphicsItem::ItemIsSelectable);
     
     return group;
@@ -280,48 +288,6 @@ void HardwareVisualizer::clearModules()
     }
     m_moduleItems.clear();
 }
-
-void HardwareVisualizer::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton) {
-        m_draggedItem = itemAt(event->pos());
-        if (m_draggedItem) {
-            m_lastMousePos = mapToScene(event->pos());
-        }
-    }
-    QGraphicsView::mousePressEvent(event);
-}
-
-void HardwareVisualizer::mouseMoveEvent(QMouseEvent *event)
-{
-    if (m_draggedItem && event->buttons() & Qt::LeftButton) {
-        QPointF newPos = mapToScene(event->pos());
-        QPointF delta = newPos - m_lastMousePos;
-        
-        // 更新对应模块的位置
-        for (auto it = m_moduleItems.begin(); it != m_moduleItems.end(); ++it) {
-            if (it.value() == m_draggedItem) {
-                // 计算新位置
-                QPointF currentPos = it.key()->position();
-                QPointF targetPos = currentPos + delta;
-                
-                // 更新模块位置（这会触发positionChanged信号）
-                it.key()->setPosition(targetPos);
-                break;
-            }
-        }
-        
-        m_lastMousePos = newPos;
-    }
-    QGraphicsView::mouseMoveEvent(event);
-}
-
-void HardwareVisualizer::mouseReleaseEvent(QMouseEvent *event)
-{
-    m_draggedItem = nullptr;
-    QGraphicsView::mouseReleaseEvent(event);
-}
-
 void HardwareVisualizer::wheelEvent(QWheelEvent *event)
 {
     // 实现缩放
@@ -440,77 +406,6 @@ void HardwareVisualizer::drawConnections()
             QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
             pathItem->setPen(pen);
             m_scene->addItem(pathItem);
-            
-            // 添加箭头指示方向
-            QPointF direction = toPoint - fromPoint;
-            double length = QLineF(QPointF(0, 0), direction).length();
-            if (length > 0) {
-                direction = QPointF(direction.x() / length, direction.y() / length);
-                
-                // 箭头点坐标计算
-                QPointF arrowP1 = toPoint - direction * 15 + QPointF(-direction.y(), direction.x()) * 5;
-                QPointF arrowP2 = toPoint - direction * 15 - QPointF(-direction.y(), direction.x()) * 5;
-                
-                // 创建箭头路径
-                QPainterPath arrowPath;
-                arrowPath.moveTo(toPoint);
-                arrowPath.lineTo(arrowP1);
-                arrowPath.lineTo(arrowP2);
-                arrowPath.closeSubpath();
-                
-                // 添加箭头
-                QGraphicsPathItem* arrow = new QGraphicsPathItem(arrowPath);
-                arrow->setBrush(lineColor);
-                arrow->setPen(QPen(lineColor));
-                m_scene->addItem(arrow);
-            }
-            
-            // 可选：添加连接类型标签
-            QString connectionType;
-            if ((fromType == HardwareModule::CPU_CORE && toType == HardwareModule::CACHE_L2) ||
-                (fromType == HardwareModule::CACHE_L2 && toType == HardwareModule::CPU_CORE)) {
-                connectionType = "CPU-L2";
-            } else if ((fromType == HardwareModule::CACHE_L2 && toType == HardwareModule::CACHE_L3) ||
-                      (fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::CACHE_L2)) {
-                connectionType = "L2-L3";
-            } else if ((fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::BUS) ||
-                      (fromType == HardwareModule::BUS && toType == HardwareModule::CACHE_L3)) {
-                connectionType = "L3-Bus";
-            } else if ((fromType == HardwareModule::BUS && toType == HardwareModule::MEMORY_CTRL) ||
-                      (fromType == HardwareModule::MEMORY_CTRL && toType == HardwareModule::BUS)) {
-                connectionType = "Bus-Mem";
-            } else if ((fromType == HardwareModule::BUS && toType == HardwareModule::DMA) ||
-                      (fromType == HardwareModule::DMA && toType == HardwareModule::BUS)) {
-                connectionType = "Bus-DMA";
-            } else if ((fromType == HardwareModule::CACHE_L3 && toType == HardwareModule::CACHE_L3)) {
-                connectionType = "L3-L3";
-            }
-            
-            // 获取可能的数据流量信息（可选显示）
-            double dataRate = 0.0;
-            int fromPort = fromModule->portId();
-            int toPort = toModule->portId();
-            
-            if (fromPort >= 0 && toPort >= 0) {
-                QString key = QString("transmit_package_number_from_%1_to_%2")
-                            .arg(fromPort).arg(toPort);
-                dataRate = m_busModule->statistic(key);
-            }
-            
-            // 根据需要决定是否显示数据流量
-            bool showDataRate = false;  // 设置为true可以同时显示连接类型和数据流量
-            
-            if (!connectionType.isEmpty()) {
-                QString labelText = connectionType;
-                if (showDataRate && dataRate > 0) {
-                    labelText += QString(" (%1)").arg(int(dataRate));
-                }
-                
-                QGraphicsTextItem* typeLabel = new QGraphicsTextItem(labelText);
-                typeLabel->setDefaultTextColor(lineColor);
-                typeLabel->setPos(midPoint + normal * dist * 0.5);
-                m_scene->addItem(typeLabel);
-            }
         }
     }
 }
@@ -635,21 +530,21 @@ QColor HardwareVisualizer::getModuleColor(HardwareModule::ModuleType type) const
 {
     switch (type) {
         case HardwareModule::CPU_CORE:
-            return QColor(255, 200, 200); // 浅红色
+            return QColor(65, 105, 225);  // 皇家蓝
         case HardwareModule::CACHE_L2:
-            return QColor(200, 255, 200); // 浅绿色
+            return QColor(60, 179, 113);  // 中海绿
         case HardwareModule::CACHE_L3:
-            return QColor(200, 200, 255); // 浅蓝色
+            return QColor(106, 90, 205);  // 石板蓝
         case HardwareModule::BUS:
-            return QColor(255, 255, 200); // 浅黄色
+            return QColor(255, 165, 0);   // 橙色
         case HardwareModule::MEMORY_CTRL:
-            return QColor(255, 200, 255); // 浅紫色
+            return QColor(186, 85, 211);  // 适中的兰花紫
         case HardwareModule::DMA:
-            return QColor(200, 255, 255); // 浅青色
+            return QColor(30, 144, 255);  // 道奇蓝
         case HardwareModule::CACHE_EVENT_TRACER:
-            return QColor(255, 228, 181); // 浅杏色
+            return QColor(250, 128, 114); // 鲑鱼色
         default:
-            return QColor(240, 240, 240); // 浅灰色
+            return QColor(169, 169, 169); // 暗灰色
     }
 }
 
@@ -825,4 +720,119 @@ bool HardwareVisualizer::isValidLogicalConnection(HardwareModule* from, Hardware
     
     // 其他情况默认为无效连接
     return false;
+}
+
+void HardwareVisualizer::drawGrid()
+{
+    const int gridSize = 50;
+    const int sceneWidth = 1000;
+    const int sceneHeight = 1000;
+    
+    QPen gridPen(QColor(60, 60, 60, 120), 1, Qt::DotLine);
+    
+    // 绘制水平线
+    for (int y = -sceneHeight/2; y <= sceneHeight/2; y += gridSize) {
+        QGraphicsLineItem *line = m_scene->addLine(-sceneWidth/2, y, sceneWidth/2, y, gridPen);
+        line->setZValue(-1000); // 确保网格在背景中
+    }
+    
+    // 绘制垂直线
+    for (int x = -sceneWidth/2; x <= sceneWidth/2; x += gridSize) {
+        QGraphicsLineItem *line = m_scene->addLine(x, -sceneHeight/2, x, sceneHeight/2, gridPen);
+        line->setZValue(-1000); // 确保网格在背景中
+    }
+}
+
+void HardwareVisualizer::loadModuleIcons()
+{
+    // 从资源文件加载图标
+    m_moduleIcons[HardwareModule::CPU_CORE] = QPixmap(":/icons/cpu.png");
+    m_moduleIcons[HardwareModule::CACHE_L2] = QPixmap(":/icons/l2cache.png");
+    m_moduleIcons[HardwareModule::CACHE_L3] = QPixmap(":/icons/l3cache.png");
+    m_moduleIcons[HardwareModule::BUS] = QPixmap(":/icons/bus.png");
+    m_moduleIcons[HardwareModule::MEMORY_CTRL] = QPixmap(":/icons/memory.png");
+    m_moduleIcons[HardwareModule::DMA] = QPixmap(":/icons/dma.png");
+    m_moduleIcons[HardwareModule::CACHE_EVENT_TRACER] = QPixmap(":/icons/tracer.png");
+    
+    // 检查图标是否成功加载，如果没有则使用默认图标
+    for (auto it = m_moduleIcons.begin(); it != m_moduleIcons.end(); ++it) {
+        if (it.value().isNull()) {
+            // 如果图标加载失败，创建一个默认图标
+            QPixmap defaultIcon(150, 100);
+            defaultIcon.fill(Qt::transparent);
+            QPainter painter(&defaultIcon);
+            painter.setRenderHint(QPainter::Antialiasing);
+            
+            // 根据模块类型设置不同的颜色
+            QColor color;
+            switch (it.key()) {
+                case HardwareModule::CPU_CORE:
+                    color = QColor(65, 105, 225); // 蓝色
+                    break;
+                case HardwareModule::CACHE_L2:
+                    color = QColor(60, 179, 113); // 绿色
+                    break;
+                case HardwareModule::CACHE_L3:
+                    color = QColor(106, 90, 205); // 紫色
+                    break;
+                case HardwareModule::BUS:
+                    color = QColor(255, 165, 0);  // 橙色
+                    break;
+                case HardwareModule::MEMORY_CTRL:
+                    color = QColor(186, 85, 211); // 紫色
+                    break;
+                case HardwareModule::DMA:
+                    color = QColor(30, 144, 255); // 蓝色
+                    break;
+                case HardwareModule::CACHE_EVENT_TRACER:
+                    color = QColor(250, 128, 114); // 红色
+                    break;
+            }
+            
+            QLinearGradient gradient(0, 0, 0, 100);
+            gradient.setColorAt(0, color.lighter(120));
+            gradient.setColorAt(1, color);
+            
+            painter.setPen(QPen(Qt::black, 1));
+            painter.setBrush(QBrush(gradient));
+            painter.drawRoundedRect(10, 10, 130, 80, 10, 10);
+            
+            // 在图标中央显示模块类型名称
+            painter.setPen(Qt::white);
+            QFont font = painter.font();
+            font.setBold(true);
+            font.setPointSize(12);
+            painter.setFont(font);
+            
+            QString typeName = getModuleTypeName(it.key());
+            QFontMetrics fm(font);
+            int textWidth = fm.horizontalAdvance(typeName);
+            painter.drawText(QPointF(75 - textWidth / 2, 55), typeName);
+            
+            it.value() = defaultIcon;
+        }
+    }
+}
+
+void HardwareVisualizer::setBackgroundBrush(const QBrush &brush)
+{
+    QGraphicsView::setBackgroundBrush(brush);
+}
+
+void HardwareVisualizer::mousePressEvent(QMouseEvent *event)
+{
+    // 禁用拖拽功能
+    QGraphicsView::mousePressEvent(event);
+}
+
+void HardwareVisualizer::mouseMoveEvent(QMouseEvent *event)
+{
+    // 禁用拖拽功能
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+void HardwareVisualizer::mouseReleaseEvent(QMouseEvent *event)
+{
+    // 禁用拖拽功能
+    QGraphicsView::mouseReleaseEvent(event);
 } 

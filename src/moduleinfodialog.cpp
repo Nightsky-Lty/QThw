@@ -189,7 +189,7 @@ QString ModuleInfoDialog::getConnectionInfo() const
 
     // 如果是CPU且端口ID为-1，显示特殊信息
     if (currentModulePort == -1) {
-        if (m_module->type() == HardwareModule::CPU_CORE || m_module->type() == HardwareModule::CACHE_EVENT_TRACER || m_module->type() == HardwareModule::MEMORY_CTRL) {
+        if (m_module->type() == HardwareModule::CPU_CORE || m_module->type() == HardwareModule::CACHE_EVENT_TRACER || m_module->type() == HardwareModule::DMA) {
             return "<p>This module do not have direct bus connections (Port ID: -1)</p>";
         } else {
             return "<p>This module does not have a valid port ID (-1)</p>";

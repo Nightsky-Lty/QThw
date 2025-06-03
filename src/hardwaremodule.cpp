@@ -22,7 +22,6 @@ void HardwareModule::setBusConfig(int portNumber, const QMap<int, int> &portToNo
     m_busPortNumber = portNumber;
     m_busPortToNodeMap = portToNodeMap;
     m_busEdges = edges;
-    emit configurationChanged();
 }
 
 void HardwareModule::setL2CacheConfig(const CacheConfig &l1i,
@@ -32,7 +31,6 @@ void HardwareModule::setL2CacheConfig(const CacheConfig &l1i,
     m_l1i = l1i;
     m_l1d = l1d;
     m_l2 = l2;
-    emit configurationChanged();
 }
 
 void HardwareModule::setL3CacheConfig(const CacheConfig &l3,
@@ -42,7 +40,6 @@ void HardwareModule::setL3CacheConfig(const CacheConfig &l3,
     m_l3 = l3;
     m_nuca_index = nucaIndex;
     m_nuca_num = nucaNum;
-    emit configurationChanged();
 }
 
 void HardwareModule::setStatistic(const QString &key, double value)
@@ -53,10 +50,6 @@ void HardwareModule::setStatistic(const QString &key, double value)
     if (it == m_statistics.end() || it.value() != value) {
         m_statistics[key] = value;
         changed = true;
-    }
-
-    if (changed) {
-        emit statisticsChanged();
     }
 }
 

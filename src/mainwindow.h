@@ -19,7 +19,7 @@ public:
 
 private slots:
     void resetToInitial();
-    void drawConnections();
+
 private:
     void createToolBar();
     void createActions();
@@ -41,6 +41,10 @@ private:
     // 工具栏动作
     QAction *m_resetAction;
     QAction *m_drawLineAction;
+    QAction *m_themeAction;
+    
+    // 主题状态
+    bool m_darkTheme;
 };
 
 #endif // MAINWINDOW_H 

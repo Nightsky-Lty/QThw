@@ -84,8 +84,6 @@ public:
     int memoryDataWidth() const { return m_memoryDataWidth; }
 
 signals:
-    void configurationChanged();
-    void statisticsChanged();
     void positionChanged(const QPointF &newPos);
 
 private:

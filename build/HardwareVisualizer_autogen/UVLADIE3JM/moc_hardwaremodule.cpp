@@ -39,21 +39,15 @@ template <> constexpr inline auto HardwareModule::qt_create_metaobjectdata<qt_me
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
         "HardwareModule",
-        "configurationChanged",
-        "",
-        "statisticsChanged",
         "positionChanged",
+        "",
         "newPos"
     };
 
     QtMocHelpers::UintData qt_methods {
-        // Signal 'configurationChanged'
-        QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
-        // Signal 'statisticsChanged'
-        QtMocHelpers::SignalData<void()>(3, 2, QMC::AccessPublic, QMetaType::Void),
         // Signal 'positionChanged'
-        QtMocHelpers::SignalData<void(const QPointF &)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QPointF, 5 },
+        QtMocHelpers::SignalData<void(const QPointF &)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QPointF, 3 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -78,18 +72,12 @@ void HardwareModule::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     auto *_t = static_cast<HardwareModule *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: _t->configurationChanged(); break;
-        case 1: _t->statisticsChanged(); break;
-        case 2: _t->positionChanged((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
+        case 0: _t->positionChanged((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
         default: ;
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
-        if (QtMocHelpers::indexOfMethod<void (HardwareModule::*)()>(_a, &HardwareModule::configurationChanged, 0))
-            return;
-        if (QtMocHelpers::indexOfMethod<void (HardwareModule::*)()>(_a, &HardwareModule::statisticsChanged, 1))
-            return;
-        if (QtMocHelpers::indexOfMethod<void (HardwareModule::*)(const QPointF & )>(_a, &HardwareModule::positionChanged, 2))
+        if (QtMocHelpers::indexOfMethod<void (HardwareModule::*)(const QPointF & )>(_a, &HardwareModule::positionChanged, 0))
             return;
     }
 }
@@ -113,33 +101,21 @@ int HardwareModule::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 1)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 1;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 1)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 3;
+        _id -= 1;
     }
     return _id;
 }
 
 // SIGNAL 0
-void HardwareModule::configurationChanged()
-{
-    QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
-}
-
-// SIGNAL 1
-void HardwareModule::statisticsChanged()
-{
-    QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
-}
-
-// SIGNAL 2
 void HardwareModule::positionChanged(const QPointF & _t1)
 {
-    QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1);
+    QMetaObject::activate<void>(this, &staticMetaObject, 0, nullptr, _t1);
 }
 QT_WARNING_POP

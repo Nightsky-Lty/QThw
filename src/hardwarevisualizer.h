@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include <QMap>
 #include <QColor>
+#include <QPixmap>
 #include "hardwaremodule.h"
 #include "moduleinfodialog.h"
 
@@ -27,6 +28,8 @@ public:
     void autoLayout();
     // 绘制连接线
     void drawConnections();
+    // 设置背景样式
+    void setBackgroundBrush(const QBrush &brush);
 
 protected:
     // 处理鼠标事件，用于拖拽模块
@@ -45,7 +48,10 @@ private:
     QPointF m_lastMousePos;
     HardwareModule* m_busModule;  // 保存总线模块的引用
     ModuleInfoDialog* m_infoDialog;  // 信息显示对话框
-
+    
+    // 硬件模块图标
+    QMap<HardwareModule::ModuleType, QPixmap> m_moduleIcons;
+    
     // 创建不同类型硬件模块的图形项
     QGraphicsItem* createModuleItem(HardwareModule* module);
     // 更新模块的统计信息显示
@@ -66,6 +72,10 @@ private:
     QString formatStatistic(const QString& key, double value) const;
     // 检查两个模块之间是否有有效的逻辑连接
     bool isValidLogicalConnection(HardwareModule* from, HardwareModule* to) const;
+    // 绘制网格线
+    void drawGrid();
+    // 加载模块图标
+    void loadModuleIcons();
 };
 
 #endif // HARDWAREVISUALIZER_H 

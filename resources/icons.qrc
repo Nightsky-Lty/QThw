@@ -1,0 +1,12 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/icons">
+        <file>cpu.png</file>
+        <file>l2cache.png</file>
+        <file>l3cache.png</file>
+        <file>bus.png</file>
+        <file>memory.png</file>
+        <file>dma.png</file>
+        <file>tracer.png</file>
+    </qresource>
+</RCC> 

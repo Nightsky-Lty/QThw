@@ -38,6 +38,7 @@ set(PROJECT_SOURCES
 set(PROJECT_RESOURCES
     resources/setup.txt
     resources/statistic.txt
+    resources/icons.qrc
 )
 
 # 创建可执行文件
@@ -52,6 +53,13 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_SOURCE_DIR}/resources/setup.txt
         ${CMAKE_SOURCE_DIR}/resources/statistic.txt
+        ${CMAKE_SOURCE_DIR}/resources/cpu.png
+        ${CMAKE_SOURCE_DIR}/resources/l2cache.png
+        ${CMAKE_SOURCE_DIR}/resources/l3cache.png
+        ${CMAKE_SOURCE_DIR}/resources/bus.png
+        ${CMAKE_SOURCE_DIR}/resources/memory.png
+        ${CMAKE_SOURCE_DIR}/resources/dma.png
+        ${CMAKE_SOURCE_DIR}/resources/tracer.png
         $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources/
 )
 

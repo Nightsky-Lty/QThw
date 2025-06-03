@@ -15,8 +15,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_visualizer(new HardwareVisualizer(this))
     , m_toolBar(new QToolBar(this))
+    , m_darkTheme(true) // 默认使用深色主题
 {
-    setWindowTitle("Hardware Visualizer");
+    setWindowTitle("硬件可视化器");
     resize(1024, 768);
 
     createActions();
@@ -33,20 +34,16 @@ MainWindow::~MainWindow()
 void MainWindow::createActions()
 {
     // Reset
-    m_resetAction = new QAction("Reset Layout", this);
+    m_resetAction = new QAction("重置布局", this);
     m_resetAction->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
     connect(m_resetAction, &QAction::triggered, this, &MainWindow::resetToInitial);
-    // Draw Connections
-    m_drawLineAction = new QAction("Draw Connections", this);
-    m_drawLineAction->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
-    connect(m_drawLineAction, &QAction::triggered, this, &MainWindow::drawConnections);
+    
 }
 
 void MainWindow::createToolBar()
 {
     addToolBar(m_toolBar);
     m_toolBar->addAction(m_resetAction);
-    m_toolBar->addAction(m_drawLineAction);
 }
 
 void MainWindow::setupInitialLayout()
@@ -65,12 +62,6 @@ void MainWindow::resetToInitial()
     // 重新加载配置
     loadConfiguration();
 }
-
-void MainWindow::drawConnections()
-{
-    m_visualizer->drawConnections();
-}
-
 void MainWindow::loadConfiguration()
 {
     loadSetupFile("resources/setup.txt");
@@ -132,7 +123,7 @@ void MainWindow::loadSetupFile(const QString& filename)
                 type = HardwareModule::MEMORY_CTRL;
             } else if (moduleName.startsWith("DMA")) {
                 type = HardwareModule::DMA;
-            } else if (moduleName == "cache_event_trace") {
+            } else if (moduleName.startsWith("cache_event_trace")) {
                 type = HardwareModule::CACHE_EVENT_TRACER;
             } else {
                 continue;
