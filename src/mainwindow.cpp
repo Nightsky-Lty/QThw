@@ -103,8 +103,16 @@ void MainWindow::loadSetupFile(const QString& filename)
     HardwareModule* currentModule = nullptr;
 
     while (!in.atEnd()) {
-        line = in.readLine().trimmed();
-        if (line.isEmpty() || line.startsWith("//")) continue;
+        line = in.readLine();
+        
+        // 移除注释部分（从 "//" 开始的内容）
+        int commentPos = line.indexOf("//");
+        if (commentPos != -1) {
+            line = line.left(commentPos);
+        }
+        
+        line = line.trimmed();
+        if (line.isEmpty()) continue;
 
         if (line.contains("@1tick")) {
             
@@ -254,8 +262,16 @@ void MainWindow::loadStatisticFile(const QString& filename)
     QMap<QString, double> currentStats;
 
     while (!in.atEnd()) {
-        QString line = in.readLine().trimmed();
-        if (line.isEmpty() || line.startsWith("//")) continue;
+        QString line = in.readLine();
+        
+        // 移除注释部分（从 "//" 开始的内容）
+        int commentPos = line.indexOf("//");
+        if (commentPos != -1) {
+            line = line.left(commentPos);
+        }
+        
+        line = line.trimmed();
+        if (line.isEmpty()) continue;
 
         if (line.contains("Latency:")) {
             if (!currentModule.isEmpty() && !currentStats.isEmpty()) {
